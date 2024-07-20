@@ -1,0 +1,93 @@
+package com.example.onlineStoreApi.features.users.services;
+
+import com.example.onlineStoreApi.features.users.models.User;
+import com.example.onlineStoreApi.features.users.repositories.UserRepository;
+import com.example.onlineStoreApi.features.users.utils.UpdateUserNameParams;
+import jakarta.transaction.Transactional;
+import org.hibernate.query.IllegalQueryOperationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+@Service
+public class UserServiceImpl implements UserService {
+    private final UserRepository userRepository;
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public User createUser(User user) {
+        Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
+
+        if (existingUser.isPresent()) {
+            throw new IllegalStateException("User already exists");
+        }
+
+        return userRepository.save(user);
+    }
+
+
+    @Override
+    public User getUserById(String id) {
+        Optional<User> user = userRepository.findById(Long.parseLong(id));
+        if (user.isEmpty()) throw new IllegalQueryOperationException("User Not found");
+        return user.get();
+    }
+
+    @Override
+    public String updatePassword(String user, String updatePasswordParams) {
+        return "";
+    }
+
+    @Override
+    @Transactional
+    public User updateUserName(String id, UpdateUserNameParams userNameParams) {
+        User existingUser = userRepository
+                .findById(Long.parseLong(id))
+                .orElseThrow(() -> new IllegalStateException("User not found"));
+
+        if ((userNameParams.getFirstName() != null) &&
+                !userNameParams.getFirstName().isEmpty() &&
+                !Objects.equals(existingUser.getFirstName(), userNameParams.getFirstName())) {
+            existingUser.setFirstName(userNameParams.getFirstName());
+        }
+
+        if ((userNameParams.getLastName() != null) &&
+                !userNameParams.getLastName().isEmpty() &&
+                !Objects.equals(existingUser.getLastName(), userNameParams.getLastName())) {
+            existingUser.setLastName(userNameParams.getLastName());
+        }
+
+        return existingUser;
+    }
+
+    @Override
+    public String updateUserRoles(Long id, String user) {
+        return "";
+    }
+
+    @Override
+    public void updateUserIsActive(String id, Boolean isActive) {
+
+    }
+
+    @Override
+    public Boolean deleteUser(String id) {
+        boolean isExist = userRepository.existsById(Long.parseLong(id));
+        if (!isExist) throw new IllegalStateException("User not found");
+        userRepository.deleteById(Long.parseLong(id));
+        return true;
+    }
+}
+
