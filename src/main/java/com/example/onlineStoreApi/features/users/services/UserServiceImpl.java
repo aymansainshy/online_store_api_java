@@ -21,10 +21,12 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
+
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
+
 
     @Override
     public User createUser(User user) {
@@ -45,10 +47,12 @@ public class UserServiceImpl implements UserService {
         return user.get();
     }
 
+
     @Override
     public String updatePassword(String user, String updatePasswordParams) {
         return "";
     }
+
 
     @Override
     @Transactional
@@ -72,15 +76,18 @@ public class UserServiceImpl implements UserService {
         return existingUser;
     }
 
+
     @Override
     public String updateUserRoles(Long id, String user) {
         return "";
     }
 
+
     @Override
     public void updateUserIsActive(String id, Boolean isActive) {
 
     }
+
 
     @Override
     public Boolean deleteUser(String id) {

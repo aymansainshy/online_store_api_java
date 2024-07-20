@@ -25,8 +25,8 @@ public class UserController {
     @GetMapping()
     public ResponseEntity<ApiResponse<List<User>>> getAllUsers() {
         List<User> userList = userService.getAllUsers();
-        ApiResponse<List<User>> apiResponse = new ApiResponse<>(userList, "Successfull");
-        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
+        ApiResponse<List<User>> apiResponse = new ApiResponse<>(userList, "Successful");
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 
 
@@ -41,7 +41,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<User>> getUserById(@PathVariable("id") String id) {
         User foundedUser = userService.getUserById(id);
-        ApiResponse<User> apiResponse = new ApiResponse<>(foundedUser, null);
+        ApiResponse<User> apiResponse = new ApiResponse<>(foundedUser, "Successful");
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 
@@ -58,10 +58,10 @@ public class UserController {
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Boolean>> deleteUserById(@PathVariable("id") String id) {
+    public ResponseEntity<ApiResponse<Boolean>> deleteUser(@PathVariable("id") String id) {
         boolean deleteResult = userService.deleteUser(id);
         ApiResponse<Boolean> apiResponse = new ApiResponse<>(deleteResult, "User deleted successfully");
-        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(apiResponse);
     }
 }
 
