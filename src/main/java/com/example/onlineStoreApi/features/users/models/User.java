@@ -4,17 +4,22 @@ import com.example.onlineStoreApi.features.users.utils.UserRoles;
 import jakarta.persistence.*;
 
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
 @Data // == @Getter @Setter and more
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class User implements Serializable {
+@RequiredArgsConstructor
+public class User { // public class User implements Serializable, UserDetails {}
     @Id
     @SequenceGenerator(
             name = "user_sequence",
@@ -35,8 +40,11 @@ public class User implements Serializable {
     private String password;
 
     // @Transient // Not Database column
+    @Builder.Default
     private Boolean isActive = true;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     private UserRoles[] roles = {UserRoles.guest};
+
 }

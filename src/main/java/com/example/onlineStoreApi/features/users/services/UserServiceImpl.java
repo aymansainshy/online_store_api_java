@@ -2,7 +2,8 @@ package com.example.onlineStoreApi.features.users.services;
 
 import com.example.onlineStoreApi.features.users.models.User;
 import com.example.onlineStoreApi.features.users.repositories.UserRepository;
-import com.example.onlineStoreApi.features.users.utils.UpdateUserNameParams;
+import com.example.onlineStoreApi.features.users.utils.CreateUserDto;
+import com.example.onlineStoreApi.features.users.utils.UpdateUserNameDto;
 import jakarta.transaction.Transactional;
 import org.hibernate.query.IllegalQueryOperationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +30,19 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User createUser(User user) {
-        Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
+    public User createUser(CreateUserDto createUserDto) {
+        Optional<User> existingUser = userRepository.findByEmail(createUserDto.getEmail());
 
         if (existingUser.isPresent()) {
             throw new IllegalStateException("User already exists");
         }
+
+        User user = User.builder()
+                .firstName(createUserDto.getFirstName())
+                .lastName(createUserDto.getLastName())
+                .email(createUserDto.getEmail())
+                .password(createUserDto.getPassword())
+                .build();
 
         return userRepository.save(user);
     }
@@ -56,7 +64,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User updateUserName(String id, UpdateUserNameParams userNameParams) {
+    public User updateUserName(String id, UpdateUserNameDto userNameParams) {
         User existingUser = userRepository
                 .findById(Long.parseLong(id))
                 .orElseThrow(() -> new IllegalStateException("User not found"));
