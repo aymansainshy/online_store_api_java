@@ -51,6 +51,9 @@ public class UserController {
             @PathVariable("id") String id,
             @RequestBody UpdateUserNameParams updatedNameParams
     ) {
+        System.out.println(updatedNameParams.getFirstName());
+        System.out.println(updatedNameParams.getLastName());
+
         User updateUser = userService.updateUserName(id, updatedNameParams);
         ApiResponse<User> apiResponse = new ApiResponse<>(updateUser, "User name updated successfully");
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);

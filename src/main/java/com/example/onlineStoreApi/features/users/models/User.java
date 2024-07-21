@@ -3,11 +3,16 @@ package com.example.onlineStoreApi.features.users.models;
 import com.example.onlineStoreApi.features.users.utils.UserRoles;
 import jakarta.persistence.*;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.io.Serializable;
-import java.util.List;
+import java.util.Arrays;
 
 @Entity
 @Table(name = "users")
+@Getter @Setter @NoArgsConstructor
 public class User implements Serializable {
     @Id
     @SequenceGenerator(
@@ -20,6 +25,7 @@ public class User implements Serializable {
             generator = "user_sequence"
     )
     private Long id;
+
     private String firstName;
     private String lastName;
 
@@ -27,7 +33,7 @@ public class User implements Serializable {
     private String email;
     private String password;
 
-    //    @Transient
+    // @Transient // Not Database column
     private Boolean isActive = true;
 
     @Enumerated(EnumType.STRING)
@@ -49,66 +55,6 @@ public class User implements Serializable {
         this.roles = roles;
     }
 
-    public User() {
-    }
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Boolean getActive() {
-        return isActive;
-    }
-
-    public void setActive(Boolean active) {
-        isActive = active;
-    }
-
-    public UserRoles[] getRoles() {
-        return roles;
-    }
-
-    public void setRoles(UserRoles[] roles) {
-        this.roles = roles;
-    }
-
 
     @Override
     public String toString() {
@@ -119,7 +65,7 @@ public class User implements Serializable {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", isActive=" + isActive +
-                ", roles=" + roles +
+                ", roles=" + Arrays.toString(roles) +
                 '}';
     }
 }
