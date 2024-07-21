@@ -1,1 +1,5 @@
-# online_store_api_java
+# Online Store Api Java (Spring Boot).
+
+# Dependencies :
+* Project Lombok : For code generations.
+
