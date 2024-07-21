@@ -33,4 +33,4 @@ build/
 .vscode/
 
 #Custome
-env.properties
+!**/src/main/**/**/env.properties
