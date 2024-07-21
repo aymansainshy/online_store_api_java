@@ -20,37 +20,34 @@ public class UserConfig {
 
         return args -> {
 
-            User ayman = new User(
-                    "Ayman",
-                    "Abdulrahman",
-                    "ayman@gmail.com",
-                    "password",
-                    true,
-                    aymanRoles
-            );
+            User ayman = User.builder()
+                    .firstName("Ayman")
+                    .lastName("Abdulrahman")
+                    .email("ayman@gmail.com")
+                    .password("password")
+                    .isActive(true)
+                    .roles(aymanRoles)
+                    .build();
 
+            User sohaib = User.builder()
+                    .firstName("Sohaib")
+                    .lastName("Badawe")
+                    .email("sohaib@gmail.com")
+                    .password("password")
+                    .isActive(true)
+                    .roles(sohaibRoles)
+                    .build();
 
-            User sohaib = new User(
-                    "Sohaib",
-                    "Badawe",
-                    "sohaib@gmail.com",
-                    "password",
-                    true,
-                    adamRoles
-            );
+            User adam = User.builder()
+                    .firstName("Adam")
+                    .lastName("Mohammed")
+                    .email("adam@gmail.com")
+                    .password("password")
+                    .isActive(true)
+                    .roles(adamRoles)
+                    .build();
 
-
-            User adam = new User(
-                    "Adam",
-                    "Mohammed",
-                    "adam@gmail.com",
-                    "password",
-                    true,
-                    sohaibRoles
-            );
-
-
-            userRepository.saveAll(List.of(ayman, adam, sohaib));
+            userRepository.saveAll(List.of(ayman, sohaib, adam));
         };
     }
 }
