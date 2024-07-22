@@ -1,5 +1,6 @@
 package com.example.onlineStoreApi.core.config;
 
+import com.example.onlineStoreApi.core.appUser.ApplicationUser;
 import com.example.onlineStoreApi.features.users.models.User;
 import com.example.onlineStoreApi.features.users.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +38,8 @@ public class ApplicationConfig {
                         .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
 
 
-                return new AppUser
-                        .AppUserBuilder()
+                return ApplicationUser
+                        .builder()
                         .email(user.getEmail())
                         .password(user.getPassword())
                         .roles(user.getRoles())

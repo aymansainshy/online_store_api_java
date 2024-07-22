@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User createUser(CreateUserDto createUserDto) {
+    public User createUser(CreateUserDto createUserDto) throws IllegalStateException {
         Optional<User> existingUser = userRepository.findByEmail(createUserDto.getEmail());
 
         if (existingUser.isPresent()) {

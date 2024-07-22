@@ -1,10 +1,7 @@
-package com.example.onlineStoreApi.core.config;
+package com.example.onlineStoreApi.core.appUser;
 
 import com.example.onlineStoreApi.features.users.utils.UserRoles;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,11 +10,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+
 @Data
 @Builder
 @AllArgsConstructor
-@RequiredArgsConstructor
-public class AppUser implements UserDetails {
+public class ApplicationUser implements UserDetails {
     private String email;
     private String password;
     private Boolean isActive;
@@ -61,3 +58,4 @@ public class AppUser implements UserDetails {
         return UserDetails.super.isEnabled();
     }
 }
+

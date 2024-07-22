@@ -1,13 +1,9 @@
 package com.example.onlineStoreApi.core.utils;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.util.Optional;
+
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class ApiResponse<T> {
     private int code;
     private T data;
@@ -19,4 +15,9 @@ public class ApiResponse<T> {
         this.message = message;
     }
 
+    public ApiResponse(int code, T data, String message) {
+        this.code = code;
+        this.data = data;
+        this.message = message;
+    }
 }
