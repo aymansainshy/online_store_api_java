@@ -29,7 +29,7 @@ public class UserController {
 
 
     @GetMapping()
-    @PreAuthorize(Is.ADMIN_OR_STAFF)
+//    @PreAuthorize(Is.ADMIN)
     public ResponseEntity<ApiResponse<List<User>>> getAllUsers() {
         List<User> userList = userService.getAllUsers();
         ApiResponse<List<User>> apiResponse = new ApiResponse<>(userList, "Successful");
@@ -38,7 +38,7 @@ public class UserController {
 
 
     @PostMapping()
-    @PreAuthorize(Is.ADMIN_OR_STAFF)
+//    @PreAuthorize(Is.ADMIN_OR_STAFF)
     public ResponseEntity<ApiResponse<User>> createUser(
             @Validated
             @RequestBody

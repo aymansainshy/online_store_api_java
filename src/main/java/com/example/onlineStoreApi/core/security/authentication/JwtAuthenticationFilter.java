@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 
 @Component
@@ -62,6 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 System.out.println(userDetails.getUsername());
                 System.out.println(userDetails.getPassword());
                 System.out.println(userDetails.getAuthorities());
+                System.out.println(Arrays.toString(userDetails.getRoles()));
 
                 UsernamePasswordAuthenticationToken usernamePasswordAuthToken =
                         new UsernamePasswordAuthenticationToken(
