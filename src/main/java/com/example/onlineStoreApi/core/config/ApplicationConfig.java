@@ -1,8 +1,6 @@
 package com.example.onlineStoreApi.core.config;
 
-import com.example.onlineStoreApi.core.appUser.ApplicationUser;
-import com.example.onlineStoreApi.features.users.models.User;
-import com.example.onlineStoreApi.features.users.repositories.UserRepository;
+import com.example.onlineStoreApi.core.security.authentication.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,9 +9,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -23,37 +18,43 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class ApplicationConfig {
 
     @Autowired
-    private final UserRepository userRepository;
+    private final CustomUserDetailsService userDetailsService;
 
 
-    // This provides new instance of UserDetailsService e with custom implementation to LoadUserByUsername.
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new UserDetailsService() {
-            @Override
-            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        return new CustomUserDetailsService(); // Define your custom UserDetailsService
+//    }
 
-                User user = userRepository
-                        .findByEmail(username)
-                        .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
-
-
-                return ApplicationUser
-                        .builder()
-                        .email(user.getEmail())
-                        .password(user.getPassword())
-                        .roles(user.getRoles())
-                        .isActive(user.getIsActive())
-                        .build();
-            }
-        };
-    }
+//    This provides new instance of UserDetailsService e with custom implementation to LoadUserByUsername.
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        return new UserDetailsService() {
+//            @Override
+//            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//
+//                User user = userRepository
+//                        .findByEmail(username)
+//                        .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+//
+//
+//                return AppUserDetails
+//                        .builder()
+//                        .id(user.getId())
+//                        .email(user.getEmail())
+//                        .password(user.getPassword())
+//                        .roles(user.getRoles())
+//                        .isActive(user.getIsActive())
+//                        .build();
+//            }
+//        };
+//    }
 
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }

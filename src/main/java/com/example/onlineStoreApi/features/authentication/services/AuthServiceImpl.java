@@ -1,7 +1,7 @@
 package com.example.onlineStoreApi.features.authentication.services;
 
 
-import com.example.onlineStoreApi.core.appUser.ApplicationUser;
+import com.example.onlineStoreApi.core.security.authentication.AppUserDetails;
 import com.example.onlineStoreApi.features.authentication.utils.AuthResponse;
 import com.example.onlineStoreApi.features.authentication.utils.LoginDto;
 import com.example.onlineStoreApi.features.authentication.utils.RegisterDto;
@@ -45,7 +45,7 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalStateException("User not found");
         }
 
-        UserDetails userDetails = ApplicationUser
+        UserDetails userDetails = AppUserDetails
                 .builder()
                 .email(existingUser.get().getEmail())
                 .password(existingUser.get().getPassword())
@@ -85,7 +85,7 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
 
-        UserDetails userDetails = ApplicationUser
+        UserDetails userDetails = AppUserDetails
                 .builder()
                 .email(user.getEmail())
                 .password(user.getPassword())

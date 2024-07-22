@@ -1,5 +1,6 @@
 package com.example.onlineStoreApi.features.users.controllers;
 
+import com.example.onlineStoreApi.core.security.authentication.Is;
 import com.example.onlineStoreApi.core.utils.ApiResponse;
 import com.example.onlineStoreApi.features.users.models.User;
 import com.example.onlineStoreApi.features.users.services.UserService;
@@ -9,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +29,7 @@ public class UserController {
 
 
     @GetMapping()
+    @PreAuthorize(Is.ADMIN_OR_STAFF)
     public ResponseEntity<ApiResponse<List<User>>> getAllUsers() {
         List<User> userList = userService.getAllUsers();
         ApiResponse<List<User>> apiResponse = new ApiResponse<>(userList, "Successful");
@@ -35,6 +38,7 @@ public class UserController {
 
 
     @PostMapping()
+    @PreAuthorize(Is.ADMIN_OR_STAFF)
     public ResponseEntity<ApiResponse<User>> createUser(
             @Validated
             @RequestBody
@@ -47,6 +51,7 @@ public class UserController {
 
 
     @GetMapping("/{id}")
+    @PreAuthorize(Is.ADMIN_OR_USER)
     public ResponseEntity<ApiResponse<User>> getUserById(@PathVariable("id") String id) {
         User foundedUser = userService.getUserById(id);
         ApiResponse<User> apiResponse = new ApiResponse<>(foundedUser, "Successful");
@@ -54,7 +59,8 @@ public class UserController {
     }
 
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{id}/username")
+    @PreAuthorize(Is.USER)
     public ResponseEntity<ApiResponse<User>> updateUserName(
             @Valid
             @PathVariable("id") String id,
@@ -70,6 +76,7 @@ public class UserController {
 
 
     @DeleteMapping("/{id}")
+    @PreAuthorize(Is.ADMIN_OR_USER)
     public ResponseEntity<ApiResponse<Boolean>> deleteUser(@PathVariable("id") String id) {
         boolean deleteResult = userService.deleteUser(id);
         ApiResponse<Boolean> apiResponse = new ApiResponse<>(deleteResult, "User deleted successfully");

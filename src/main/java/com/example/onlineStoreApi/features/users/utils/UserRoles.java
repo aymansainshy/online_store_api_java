@@ -4,5 +4,4 @@ public enum UserRoles {
     admin,
     staff,
     guest,
-    reqUser
 }

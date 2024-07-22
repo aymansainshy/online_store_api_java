@@ -1,4 +1,4 @@
-package com.example.onlineStoreApi.core.appUser;
+package com.example.onlineStoreApi.core.security.authentication;
 
 import com.example.onlineStoreApi.features.users.utils.UserRoles;
 import lombok.*;
@@ -14,7 +14,10 @@ import java.util.stream.Collectors;
 @Data
 @Builder
 @AllArgsConstructor
-public class ApplicationUser implements UserDetails {
+public class AppUserDetails implements UserDetails {
+    @Getter
+    private Long id;
+
     private String email;
     private String password;
     private Boolean isActive;
@@ -27,6 +30,7 @@ public class ApplicationUser implements UserDetails {
                 .map(role -> new SimpleGrantedAuthority(role.name()))
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public String getPassword() {

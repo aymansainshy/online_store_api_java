@@ -1,4 +1,4 @@
-package com.example.onlineStoreApi.core.config;
+package com.example.onlineStoreApi.core.security.authentication;
 
 import com.example.onlineStoreApi.services.JwtService.JwtService;
 import jakarta.servlet.FilterChain;
@@ -12,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -28,7 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private final JwtService jwtService;
     @Autowired
-    private final UserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
 
     @Override
@@ -52,10 +50,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // if the token is valid and authenticated we need to fetch the user form DB.
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+            AppUserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
             if (jwtService.isTokenValidate(jwtToken, userDetails)) {
 
+                System.out.println(userDetails.getId());
                 System.out.println(userDetails.getUsername());
                 System.out.println(userDetails.getPassword());
                 System.out.println(userDetails.getAuthorities());
