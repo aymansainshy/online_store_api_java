@@ -1,6 +1,6 @@
 package com.example.onlineStoreApi.features.users.controllers;
 
-import com.example.onlineStoreApi.core.security.authentication.Is;
+import com.example.onlineStoreApi.core.security.authorization.Is;
 import com.example.onlineStoreApi.core.utils.ApiResponse;
 import com.example.onlineStoreApi.features.users.models.User;
 import com.example.onlineStoreApi.features.users.services.UserService;

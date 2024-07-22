@@ -49,6 +49,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         jwtToken = authHeader.substring(7);
         userEmail = jwtService.extractUsername(jwtToken);
 
+        // TODO: Check if the token is not blacklisted .... jwtService.isTokenBlacklisted(jwtToken)
+
         // if the token is valid and authenticated we need to fetch the user form DB.
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
