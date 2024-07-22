@@ -1,5 +1,7 @@
 package com.example.onlineStoreApi.core.security.authentication;
 
+import com.example.onlineStoreApi.core.security.userDetailsServices.AppUserDetails;
+import com.example.onlineStoreApi.core.security.userDetailsServices.CustomUserDetailsService;
 import com.example.onlineStoreApi.services.JwtService.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

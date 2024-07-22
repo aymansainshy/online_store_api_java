@@ -1,6 +1,6 @@
 package com.example.onlineStoreApi.core.config;
 
-import com.example.onlineStoreApi.core.security.authentication.CustomUserDetailsService;
+import com.example.onlineStoreApi.core.security.userDetailsServices.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,36 +19,6 @@ public class ApplicationConfig {
 
     @Autowired
     private final CustomUserDetailsService userDetailsService;
-
-
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        return new CustomUserDetailsService(); // Define your custom UserDetailsService
-//    }
-
-//    This provides new instance of UserDetailsService e with custom implementation to LoadUserByUsername.
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        return new UserDetailsService() {
-//            @Override
-//            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//
-//                User user = userRepository
-//                        .findByEmail(username)
-//                        .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
-//
-//
-//                return AppUserDetails
-//                        .builder()
-//                        .id(user.getId())
-//                        .email(user.getEmail())
-//                        .password(user.getPassword())
-//                        .roles(user.getRoles())
-//                        .isActive(user.getIsActive())
-//                        .build();
-//            }
-//        };
-//    }
 
 
     @Bean

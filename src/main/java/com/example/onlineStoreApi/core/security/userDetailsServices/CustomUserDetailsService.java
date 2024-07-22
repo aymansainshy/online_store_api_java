@@ -1,4 +1,4 @@
-package com.example.onlineStoreApi.core.security.authentication;
+package com.example.onlineStoreApi.core.security.userDetailsServices;
 
 import com.example.onlineStoreApi.features.users.models.User;
 import com.example.onlineStoreApi.features.users.repositories.UserRepository;
@@ -21,7 +21,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public AppUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        // TODO: Try to fetch user form cache if not then fetched from Repository..
+        //  TODO: Try to fetch user form cache if not then fetched from Repository..
+
 
         User user = userRepository
                 .findByEmail(username)

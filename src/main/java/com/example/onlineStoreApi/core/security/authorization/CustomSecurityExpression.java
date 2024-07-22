@@ -1,7 +1,7 @@
 package com.example.onlineStoreApi.core.security.authorization;
 
 
-import com.example.onlineStoreApi.core.security.authentication.AppUserDetails;
+import com.example.onlineStoreApi.core.security.userDetailsServices.AppUserDetails;
 import com.example.onlineStoreApi.features.users.utils.UserRoles;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,8 +16,9 @@ public class CustomSecurityExpression {
         if (authentication == null) {
             return false;
         }
-        // Assuming UserDetailsService returns a UserDetails object that contains the user ID
+
         AppUserDetails userDetails = (AppUserDetails) authentication.getPrincipal();
+        System.out.println("isUser ------>  " + userDetails.getId());
         return userDetails.getId().equals(userId);
     }
 

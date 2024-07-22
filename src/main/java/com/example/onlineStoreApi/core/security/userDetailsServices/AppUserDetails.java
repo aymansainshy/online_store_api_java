@@ -1,4 +1,4 @@
-package com.example.onlineStoreApi.core.security.authentication;
+package com.example.onlineStoreApi.core.security.userDetailsServices;
 
 import com.example.onlineStoreApi.features.users.utils.UserRoles;
 import lombok.*;

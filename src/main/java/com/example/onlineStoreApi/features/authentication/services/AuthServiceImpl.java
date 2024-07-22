@@ -1,7 +1,7 @@
 package com.example.onlineStoreApi.features.authentication.services;
 
 
-import com.example.onlineStoreApi.core.security.authentication.AppUserDetails;
+import com.example.onlineStoreApi.core.security.userDetailsServices.AppUserDetails;
 import com.example.onlineStoreApi.features.authentication.utils.AuthResponse;
 import com.example.onlineStoreApi.features.authentication.utils.LoginDto;
 import com.example.onlineStoreApi.features.authentication.utils.RegisterDto;
