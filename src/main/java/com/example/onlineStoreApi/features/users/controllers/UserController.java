@@ -80,7 +80,7 @@ public class UserController {
     public ResponseEntity<ApiResponse<Boolean>> deleteUser(@PathVariable("id") String id) {
         boolean deleteResult = userService.deleteUser(id);
         ApiResponse<Boolean> apiResponse = new ApiResponse<>(deleteResult, "User deleted successfully");
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(apiResponse);
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 }
 

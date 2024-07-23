@@ -47,18 +47,8 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalStateException("User not found");
         }
 
-        AppUserDetails userDetails = AppUserDetails
-                .builder()
-                .id(existingUser.get().getId())
-                .email(existingUser.get().getEmail())
-                .password(existingUser.get().getPassword())
-                .roles(existingUser.get().getRoles())
-                .isActive(existingUser.get().getIsActive())
-                .build();
-
-
-        var accessToken = jwtService.generateAccessToken(userDetails);
-        var refreshToken = jwtService.generateRefreshToken(userDetails);
+        String accessToken = jwtService.generateAccessToken(existingUser.get());
+        String refreshToken = jwtService.generateRefreshToken(existingUser.get());
 
         return AuthResponse
                 .builder()
@@ -91,17 +81,8 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
 
-        AppUserDetails userDetails = AppUserDetails
-                .builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .roles(user.getRoles())
-                .isActive(user.getIsActive())
-                .build();
-
-        var accessToken = jwtService.generateAccessToken(userDetails);
-        var refreshToken = jwtService.generateRefreshToken(userDetails);
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
 
         return AuthResponse
                 .builder()
@@ -131,21 +112,12 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalStateException("User not found");
         }
 
-        AppUserDetails userDetails = AppUserDetails
-                .builder()
-                .id(existingUser.get().getId())
-                .email(existingUser.get().getEmail())
-                .password(existingUser.get().getPassword())
-                .roles(existingUser.get().getRoles())
-                .isActive(existingUser.get().getIsActive())
-                .build();
-
-        var accessToken = jwtService.generateAccessToken(userDetails);
-        var refreshToken = jwtService.generateRefreshToken(userDetails);
+        String accessToken = jwtService.generateAccessToken(existingUser.get());
+        var refreshToken = jwtService.generateRefreshToken(existingUser.get());
 
         return AuthResponse
                 .builder()
-//                .user(existingUser.get())
+                .user(existingUser.get())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();

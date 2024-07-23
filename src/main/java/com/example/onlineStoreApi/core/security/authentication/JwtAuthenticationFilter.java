@@ -57,7 +57,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // ** IS TOKEN NOT BLACKLISTED **
         // Check if the token is not blacklisted ....
-        if (jwtService.isTokenBlackListed(authToken)) {
+        if (jwtService.isTokenBlacklisted(authToken)) {
+            System.out.println("___-_--________-___ _____Token Blacklisted_-__-_-_-_-_-________-_---_- " + true);
             filterChain.doFilter(request, response);
             return;
         }
@@ -75,7 +76,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (Objects.equals(tokenType, "refresh")) {
             System.out.println("<<<<<<<<< ! REFRESH TOKEN FORBIDDEN ! >>>>>>>>>");
             filterChain.doFilter(request, response);
-//            throw new IllegalStateException("REFRESH TOKEN FORBIDDEN");
+            // throw new IllegalStateException("REFRESH TOKEN FORBIDDEN");
             return;
         }
 
@@ -90,7 +91,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             AppUserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
             // Check if the given token and UserDetails are Valid.
-            if (jwtService.isTokenValidate(authToken, userDetails)) {
+            if (jwtService.isTokenValidate(authToken, userDetails.getEmail())) {
 
                 System.out.println(userDetails.getId());
                 System.out.println(userDetails.getUsername());
