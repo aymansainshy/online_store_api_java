@@ -5,9 +5,8 @@ import com.example.onlineStoreApi.core.utils.ApiResponse;
 import com.example.onlineStoreApi.features.authentication.services.AuthService;
 import com.example.onlineStoreApi.features.authentication.utils.AuthResponse;
 import com.example.onlineStoreApi.features.authentication.utils.LoginDto;
+import com.example.onlineStoreApi.features.authentication.utils.RefreshDto;
 import com.example.onlineStoreApi.features.authentication.utils.RegisterDto;
-import com.example.onlineStoreApi.features.users.models.User;
-import com.example.onlineStoreApi.features.users.utils.CreateUserDto;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,31 +46,16 @@ public class AuthController {
         ApiResponse<AuthResponse> apiResponse = new ApiResponse<>(authResponse, "User registered successfully");
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
-}
 
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<AuthResponse>> refreshToken(@Validated @RequestBody RefreshDto refreshDto) throws IllegalStateException {
+        AuthResponse authResponse = authService.refreshToken(refreshDto);
+        ApiResponse<AuthResponse> apiResponse = new ApiResponse<>(authResponse, "Success");
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
+    }
+}
 
 
 //@RequestHeader("User-Agent") String userAgent
 
-
-//
-//  if (!refreshToken) {
-//        throw new BadRequestError('Refresh token required!')
-//        }
-//
-//                try {
-//                const decodedToken = this.jwtService.verifyToken(refreshToken) as { id: string };
-//
-//            const user = await this.userRepository.findById(decodedToken.id);
-//            if (!user) {
-//        throw new InvalidCredentialError('Invalid refresh token!');
-//            }
-//
-//                    const newAccessToken = this.jwtService.generateToken(String(user.id));
-//        const newRefreshToken = this.jwtService.generateRefreshToken(String(user.id));
-//
-//        return new AuthResponse(undefined, newAccessToken, newRefreshToken);
-//
-//        } catch (error: any) {
-//        throw error;
-//        }

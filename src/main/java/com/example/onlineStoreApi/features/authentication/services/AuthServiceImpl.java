@@ -4,6 +4,7 @@ package com.example.onlineStoreApi.features.authentication.services;
 import com.example.onlineStoreApi.core.security.userDetailsServices.AppUserDetails;
 import com.example.onlineStoreApi.features.authentication.utils.AuthResponse;
 import com.example.onlineStoreApi.features.authentication.utils.LoginDto;
+import com.example.onlineStoreApi.features.authentication.utils.RefreshDto;
 import com.example.onlineStoreApi.features.authentication.utils.RegisterDto;
 import com.example.onlineStoreApi.features.users.models.User;
 import com.example.onlineStoreApi.features.users.repositories.UserRepository;
@@ -16,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -107,6 +109,47 @@ public class AuthServiceImpl implements AuthService {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
+    }
+
+
+    @Override
+    public AuthResponse refreshToken(RefreshDto refreshDto) throws IllegalStateException {
+        System.out.println("___-_--________-___ ____REFRESH__-__-_-_-_-_-________-_---_- " + refreshDto.getRefresh());
+        var username = jwtService.extractUsername(refreshDto.getRefresh());
+
+
+        String tokenType = jwtService.extractTokenType(refreshDto.getRefresh());
+        Date expiration = jwtService.extractExpiration(refreshDto.getRefresh());
+        boolean isExpired = jwtService.isTokenExpired(refreshDto.getRefresh());
+        System.out.println("___-_--________-___ ____REFRESH__-__-_-_-_-_-________-_---_- " + tokenType);
+        System.out.println("___-_--________-___ ____REFRESH-__-_-_-_-_-________-_---_- " + expiration);
+        System.out.println("___-_--________-___ ____REFRESH-__-_-_-_-_-________-_---_- " + isExpired);
+
+        Optional<User> existingUser = userRepository.findByEmail(username);
+
+        if (existingUser.isEmpty()) {
+            throw new IllegalStateException("User not found");
+        }
+
+        AppUserDetails userDetails = AppUserDetails
+                .builder()
+                .id(existingUser.get().getId())
+                .email(existingUser.get().getEmail())
+                .password(existingUser.get().getPassword())
+                .roles(existingUser.get().getRoles())
+                .isActive(existingUser.get().getIsActive())
+                .build();
+
+        var accessToken = jwtService.generateAccessToken(userDetails);
+        var refreshToken = jwtService.generateRefreshToken(userDetails);
+
+        return AuthResponse
+                .builder()
+//                .user(existingUser.get())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+
     }
 
 }
