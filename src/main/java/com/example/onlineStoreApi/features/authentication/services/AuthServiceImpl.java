@@ -45,8 +45,9 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalStateException("User not found");
         }
 
-        UserDetails userDetails = AppUserDetails
+        AppUserDetails userDetails = AppUserDetails
                 .builder()
+                .id(existingUser.get().getId())
                 .email(existingUser.get().getEmail())
                 .password(existingUser.get().getPassword())
                 .roles(existingUser.get().getRoles())
@@ -85,8 +86,9 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
 
-        UserDetails userDetails = AppUserDetails
+        AppUserDetails userDetails = AppUserDetails
                 .builder()
+                .id(user.getId())
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .roles(user.getRoles())
