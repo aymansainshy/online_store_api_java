@@ -54,12 +54,15 @@ public class AuthServiceImpl implements AuthService {
                 .isActive(existingUser.get().getIsActive())
                 .build();
 
-        var jwtToken = jwtService.generateToken(userDetails);
+
+        var accessToken = jwtService.generateAccessToken(userDetails);
+        var refreshToken = jwtService.generateRefreshToken(userDetails);
 
         return AuthResponse
                 .builder()
                 .user(existingUser.get())
-                .accessToken(jwtToken)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
 
 //        boolean isMatch = passwordEncoder.matches(loginDto.getPassword(), existingUser.get().getPassword());
@@ -95,12 +98,14 @@ public class AuthServiceImpl implements AuthService {
                 .isActive(user.getIsActive())
                 .build();
 
-        var jwtToken = jwtService.generateToken(userDetails);
+        var accessToken = jwtService.generateAccessToken(userDetails);
+        var refreshToken = jwtService.generateRefreshToken(userDetails);
 
         return AuthResponse
                 .builder()
                 .user(user)
-                .accessToken(jwtToken)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 

@@ -48,3 +48,30 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
 }
+
+
+
+//@RequestHeader("User-Agent") String userAgent
+
+
+//
+//  if (!refreshToken) {
+//        throw new BadRequestError('Refresh token required!')
+//        }
+//
+//                try {
+//                const decodedToken = this.jwtService.verifyToken(refreshToken) as { id: string };
+//
+//            const user = await this.userRepository.findById(decodedToken.id);
+//            if (!user) {
+//        throw new InvalidCredentialError('Invalid refresh token!');
+//            }
+//
+//                    const newAccessToken = this.jwtService.generateToken(String(user.id));
+//        const newRefreshToken = this.jwtService.generateRefreshToken(String(user.id));
+//
+//        return new AuthResponse(undefined, newAccessToken, newRefreshToken);
+//
+//        } catch (error: any) {
+//        throw error;
+//        }

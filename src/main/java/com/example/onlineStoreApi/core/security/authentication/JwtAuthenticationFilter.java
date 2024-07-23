@@ -3,6 +3,7 @@ package com.example.onlineStoreApi.core.security.authentication;
 import com.example.onlineStoreApi.core.security.userDetailsServices.AppUserDetails;
 import com.example.onlineStoreApi.core.security.userDetailsServices.CustomUserDetailsService;
 import com.example.onlineStoreApi.services.JwtService.JwtService;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +21,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Objects;
 
 
 @Component
@@ -39,25 +42,55 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
-        final String jwtToken;
+        final String authToken;
         final String userEmail;
 
+        // ** IS TOKEN NOT PROVIDED **
+        // Check if the token is null or the token Sent is not start with Bearer ....
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        jwtToken = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(jwtToken);
+        authToken = authHeader.substring(7);
 
-        // TODO: Check if the token is not blacklisted .... jwtService.isTokenBlacklisted(jwtToken)
+
+        // ** IS TOKEN NOT BLACKLISTED **
+        // Check if the token is not blacklisted ....
+        if (jwtService.isTokenBlackListed(authToken)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+
+        // ** IS TOKEN IS ACCESS TOKEN TYPE **
+        // Extract Token type from JwtPayload aka Claim is Not RefreshToken ....
+        String tokenType = jwtService.extractTokenType(authToken);
+        Date expiration = jwtService.extractExpiration(authToken);
+        boolean isExpired = jwtService.isTokenExpired(authToken);
+        System.out.println("___-_--________-___ ______-__-_-_-_-_-________-_---_- " + tokenType);
+        System.out.println("___-_--________-___ ______-__-_-_-_-_-________-_---_- " + expiration);
+        System.out.println("___-_--________-___ ______-__-_-_-_-_-________-_---_- " + isExpired);
+
+        if (Objects.equals(tokenType, "refresh")) {
+            System.out.println("<<<<<<<<< ! REFRESH TOKEN FORBIDDEN ! >>>>>>>>>");
+            filterChain.doFilter(request, response);
+//            throw new IllegalStateException("REFRESH TOKEN FORBIDDEN");
+            return;
+        }
+
+
+        // Extract username from JwtPayload aka Claim
+        userEmail = jwtService.extractUsername(authToken);
+
 
         // if the token is valid and authenticated we need to fetch the user form DB.
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
             AppUserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
-            if (jwtService.isTokenValidate(jwtToken, userDetails)) {
+            // Check if the given token and UserDetails are Valid.
+            if (jwtService.isTokenValidate(authToken, userDetails)) {
 
                 System.out.println(userDetails.getId());
                 System.out.println(userDetails.getUsername());
@@ -76,7 +109,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthToken);
             }
-
         }
 
         filterChain.doFilter(request, response);
