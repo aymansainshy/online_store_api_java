@@ -1,7 +1,8 @@
 package com.example.onlineStoreApi.features.authentication.services;
 
 
-import com.example.onlineStoreApi.core.security.userDetailsServices.AppUserDetails;
+import com.example.onlineStoreApi.core.exceptions.customeExceptions.ConflictException;
+import com.example.onlineStoreApi.core.exceptions.customeExceptions.ResourceNotFoundException;
 import com.example.onlineStoreApi.features.authentication.utils.AuthResponse;
 import com.example.onlineStoreApi.features.authentication.utils.LoginDto;
 import com.example.onlineStoreApi.features.authentication.utils.RefreshDto;
@@ -13,7 +14,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
 
 
-    public AuthResponse login(LoginDto loginDto) throws IllegalStateException {
+    public AuthResponse login(LoginDto loginDto) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.getEmail(),
@@ -44,7 +44,7 @@ public class AuthServiceImpl implements AuthService {
         Optional<User> existingUser = userRepository.findByEmail(loginDto.getEmail());
 
         if (existingUser.isEmpty()) {
-            throw new IllegalStateException("User not found");
+            throw new ResourceNotFoundException("User not found");
         }
 
         String accessToken = jwtService.generateAccessToken(existingUser.get());
@@ -65,11 +65,11 @@ public class AuthServiceImpl implements AuthService {
     }
 
 
-    public AuthResponse register(RegisterDto registerDto) throws IllegalStateException {
+    public AuthResponse register(RegisterDto registerDto) {
         Optional<User> existingUser = userRepository.findByEmail(registerDto.getEmail());
 
         if (existingUser.isPresent()) {
-            throw new IllegalStateException("User already exists");
+            throw new ConflictException("User already exists");
         }
 
         User user = User.builder()
@@ -109,7 +109,7 @@ public class AuthServiceImpl implements AuthService {
         Optional<User> existingUser = userRepository.findByEmail(username);
 
         if (existingUser.isEmpty()) {
-            throw new IllegalStateException("User not found");
+            throw new ResourceNotFoundException("User not found");
         }
 
         String accessToken = jwtService.generateAccessToken(existingUser.get());

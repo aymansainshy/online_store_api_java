@@ -1,11 +1,12 @@
 package com.example.onlineStoreApi.features.users.services;
 
+import com.example.onlineStoreApi.core.exceptions.customeExceptions.ConflictException;
+import com.example.onlineStoreApi.core.exceptions.customeExceptions.ResourceNotFoundException;
 import com.example.onlineStoreApi.features.users.models.User;
 import com.example.onlineStoreApi.features.users.repositories.UserRepository;
 import com.example.onlineStoreApi.features.users.utils.CreateUserDto;
 import com.example.onlineStoreApi.features.users.utils.UpdateUserNameDto;
 import jakarta.transaction.Transactional;
-import org.hibernate.query.IllegalQueryOperationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,11 +31,11 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User createUser(CreateUserDto createUserDto) throws IllegalStateException {
+    public User createUser(CreateUserDto createUserDto) {
         Optional<User> existingUser = userRepository.findByEmail(createUserDto.getEmail());
 
         if (existingUser.isPresent()) {
-            throw new IllegalStateException("User already exists");
+            throw new ConflictException("User already exist");
         }
 
         User user = User.builder()
@@ -51,7 +52,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(String id) {
         Optional<User> user = userRepository.findById(Long.parseLong(id));
-        if (user.isEmpty()) throw new IllegalQueryOperationException("User Not found");
+        if (user.isEmpty()) throw new ResourceNotFoundException("User Not found");
         return user.get();
     }
 
@@ -67,7 +68,7 @@ public class UserServiceImpl implements UserService {
     public User updateUserName(String id, UpdateUserNameDto userNameParams) {
         User existingUser = userRepository
                 .findById(Long.parseLong(id))
-                .orElseThrow(() -> new IllegalStateException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if ((userNameParams.getFirstName() != null) &&
                 !userNameParams.getFirstName().isEmpty() &&
@@ -100,7 +101,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean deleteUser(String id) {
         boolean isExist = userRepository.existsById(Long.parseLong(id));
-        if (!isExist) throw new IllegalStateException("User not found");
+        if (!isExist) throw new ResourceNotFoundException("User not found");
         userRepository.deleteById(Long.parseLong(id));
         return true;
     }

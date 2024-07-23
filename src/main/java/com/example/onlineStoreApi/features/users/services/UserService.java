@@ -9,7 +9,7 @@ import java.util.List;
 public interface UserService {
     List<User> getAllUsers();
 
-    User createUser(CreateUserDto createUserDto) throws Exception;
+    User createUser(CreateUserDto createUserDto);
 
     User getUserById(String id);
 

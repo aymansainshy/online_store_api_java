@@ -43,7 +43,7 @@ public class UserController {
             @Validated
             @RequestBody
             CreateUserDto createUserParams
-    ) throws Exception {
+    ) {
         User createdUser = userService.createUser(createUserParams);
         ApiResponse<User> apiResponse = new ApiResponse<>(createdUser, "User Created Successfully");
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);

@@ -30,7 +30,7 @@ public class AuthController {
             @Validated
             @RequestBody
             LoginDto loginDto
-    ) throws IllegalStateException {
+    ) {
         AuthResponse authResponse = authService.login(loginDto);
         ApiResponse<AuthResponse> apiResponse = new ApiResponse<>(authResponse, "User loggedIn successfully");
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
@@ -41,7 +41,7 @@ public class AuthController {
             @Validated
             @RequestBody
             RegisterDto registerDto
-    ) throws IllegalStateException {
+    ) {
         AuthResponse authResponse = authService.register(registerDto);
         ApiResponse<AuthResponse> apiResponse = new ApiResponse<>(authResponse, "User registered successfully");
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
@@ -49,7 +49,7 @@ public class AuthController {
 
 
     @PostMapping("/refresh")
-    public ResponseEntity<ApiResponse<AuthResponse>> refreshToken(@Validated @RequestBody RefreshDto refreshDto) throws IllegalStateException {
+    public ResponseEntity<ApiResponse<AuthResponse>> refreshToken(@Validated @RequestBody RefreshDto refreshDto) {
         AuthResponse authResponse = authService.refreshToken(refreshDto);
         ApiResponse<AuthResponse> apiResponse = new ApiResponse<>(authResponse, "Success");
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);

@@ -1,6 +1,7 @@
 package com.example.onlineStoreApi.core.utils;
 
 import lombok.Data;
+import org.springframework.http.HttpStatusCode;
 
 
 @Data
