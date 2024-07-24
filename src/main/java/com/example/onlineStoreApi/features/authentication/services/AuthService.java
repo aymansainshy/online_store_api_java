@@ -1,9 +1,6 @@
 package com.example.onlineStoreApi.features.authentication.services;
 
-import com.example.onlineStoreApi.features.authentication.utils.AuthResponse;
-import com.example.onlineStoreApi.features.authentication.utils.LoginDto;
-import com.example.onlineStoreApi.features.authentication.utils.RefreshDto;
-import com.example.onlineStoreApi.features.authentication.utils.RegisterDto;
+import com.example.onlineStoreApi.features.authentication.utils.*;
 
 
 public interface AuthService {
@@ -11,5 +8,5 @@ public interface AuthService {
 
     AuthResponse register(RegisterDto registerDto);
 
-    AuthResponse refreshToken(RefreshDto refreshDto);
+    RefreshTokenResponse refreshToken(RefreshDto refreshDto);
 }

@@ -3,10 +3,7 @@ package com.example.onlineStoreApi.features.authentication.services;
 
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.ConflictException;
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.ResourceNotFoundException;
-import com.example.onlineStoreApi.features.authentication.utils.AuthResponse;
-import com.example.onlineStoreApi.features.authentication.utils.LoginDto;
-import com.example.onlineStoreApi.features.authentication.utils.RefreshDto;
-import com.example.onlineStoreApi.features.authentication.utils.RegisterDto;
+import com.example.onlineStoreApi.features.authentication.utils.*;
 import com.example.onlineStoreApi.features.users.models.User;
 import com.example.onlineStoreApi.features.users.repositories.UserRepository;
 import com.example.onlineStoreApi.services.JwtService.JwtService;
@@ -94,7 +91,7 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public AuthResponse refreshToken(RefreshDto refreshDto) throws IllegalStateException {
+    public RefreshTokenResponse refreshToken(RefreshDto refreshDto) throws IllegalStateException {
         System.out.println("___-_--________-___ ____REFRESH__-__-_-_-_-_-________-_---_- " + refreshDto.getRefresh());
         var username = jwtService.extractUsername(refreshDto.getRefresh());
 
@@ -115,9 +112,8 @@ public class AuthServiceImpl implements AuthService {
         String accessToken = jwtService.generateAccessToken(existingUser.get());
         var refreshToken = jwtService.generateRefreshToken(existingUser.get());
 
-        return AuthResponse
+        return RefreshTokenResponse
                 .builder()
-                .user(existingUser.get())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();

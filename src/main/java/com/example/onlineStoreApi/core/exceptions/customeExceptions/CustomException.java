@@ -1,6 +1,6 @@
 package com.example.onlineStoreApi.core.exceptions.customeExceptions;
 
-import com.example.onlineStoreApi.core.exceptions.ExceptionResponse;
+import com.example.onlineStoreApi.core.exceptions.GlobalExceptionResponse;
 import com.example.onlineStoreApi.core.utils.ApiResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,10 +19,10 @@ public abstract class CustomException extends RuntimeException {
         this.status = status;
     }
 
-    public ApiResponse<ExceptionResponse> errorResponse() {
+    public ApiResponse<GlobalExceptionResponse> errorResponse() {
         return new ApiResponse<>(
                 0,
-                new ExceptionResponse(this.getMessage(), this.getErrorCode(), this.getStatus()),
+                new GlobalExceptionResponse(this.getMessage(), this.getErrorCode(), this.getStatus()),
                 this.getMessage()
         );
     }

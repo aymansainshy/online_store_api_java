@@ -1,8 +1,7 @@
 package com.example.onlineStoreApi.core.exceptions.customeExceptions;
 
-import com.example.onlineStoreApi.core.exceptions.ExceptionResponse;
+import com.example.onlineStoreApi.core.exceptions.responses.ValidationExceptionResponse;
 import com.example.onlineStoreApi.core.utils.ApiResponse;
-import lombok.Data;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -23,11 +22,11 @@ public class ValidationException extends CustomException {
         this.errors = errors;
     }
 
-    @Override
-    public ApiResponse<ExceptionResponse> errorResponse() {
+
+    public ApiResponse<ValidationExceptionResponse> validationErrorResponse() {
         return new ApiResponse<>(
                 0,
-                new ExceptionResponse(this.getMessage(), this.getErrorCode(), this.errors, this.getStatus()),
+                new ValidationExceptionResponse(this.getMessage(), this.getErrorCode(), this.errors, this.getStatus()),
                 this.getMessage()
         );
     }

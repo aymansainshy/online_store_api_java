@@ -1,6 +1,7 @@
-package com.example.onlineStoreApi.core.exceptions;
+package com.example.onlineStoreApi.core.exceptions.responses;
 
 
+import com.example.onlineStoreApi.core.exceptions.GlobalExceptionResponse;
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.CustomException;
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.InternalServerException;
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.ValidationException;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<ExceptionResponse>> handleValidationException(MethodArgumentNotValidException exception, WebRequest request) {
+    public ResponseEntity<ApiResponse<ValidationExceptionResponse>> handleValidationException(MethodArgumentNotValidException exception, WebRequest request) {
         System.out.println(":::::::::::::::::::::::::Middle:::::::::::::::::::::::::::" + exception);
 
         ArrayList<Map<String, String>> errors = new ArrayList<>();
@@ -52,12 +52,12 @@ public class GlobalExceptionHandler {
         }
 
         ValidationException validationException = new ValidationException(errors);
-        return ResponseEntity.status(validationException.getStatus()).body(validationException.errorResponse());
+        return ResponseEntity.status(validationException.getStatus()).body(validationException.validationErrorResponse());
     }
 
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<ExceptionResponse>> handleGlobalException(Exception exception, WebRequest request) {
+    public ResponseEntity<ApiResponse<GlobalExceptionResponse>> handleGlobalException(Exception exception, WebRequest request) {
         System.out.println("::::::::::::::::::::::::::GLOBAl::::::::::::::::::::::::::" + exception);
         System.out.println("_____---_-_-----------______-___--__-__-_--_---" + (exception instanceof CustomException));
 

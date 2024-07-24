@@ -32,7 +32,7 @@ public class UserController {
 //    @PreAuthorize(Is.ADMIN)
     public ResponseEntity<ApiResponse<List<User>>> getAllUsers() {
         List<User> userList = userService.getAllUsers();
-        ApiResponse<List<User>> apiResponse = new ApiResponse<>(userList, "Successful");
+        ApiResponse<List<User>> apiResponse = new ApiResponse<>(userList);
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 
@@ -54,7 +54,7 @@ public class UserController {
     @PreAuthorize(Is.ADMIN_OR_USER)
     public ResponseEntity<ApiResponse<User>> getUserById(@PathVariable("id") String id) {
         User foundedUser = userService.getUserById(id);
-        ApiResponse<User> apiResponse = new ApiResponse<>(foundedUser, "Successful");
+        ApiResponse<User> apiResponse = new ApiResponse<>(foundedUser);
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 

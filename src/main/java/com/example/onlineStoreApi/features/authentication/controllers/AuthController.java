@@ -3,10 +3,7 @@ package com.example.onlineStoreApi.features.authentication.controllers;
 
 import com.example.onlineStoreApi.core.utils.ApiResponse;
 import com.example.onlineStoreApi.features.authentication.services.AuthService;
-import com.example.onlineStoreApi.features.authentication.utils.AuthResponse;
-import com.example.onlineStoreApi.features.authentication.utils.LoginDto;
-import com.example.onlineStoreApi.features.authentication.utils.RefreshDto;
-import com.example.onlineStoreApi.features.authentication.utils.RegisterDto;
+import com.example.onlineStoreApi.features.authentication.utils.*;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,9 +46,9 @@ public class AuthController {
 
 
     @PostMapping("/refresh")
-    public ResponseEntity<ApiResponse<AuthResponse>> refreshToken(@Validated @RequestBody RefreshDto refreshDto) {
-        AuthResponse authResponse = authService.refreshToken(refreshDto);
-        ApiResponse<AuthResponse> apiResponse = new ApiResponse<>(authResponse, "Success");
+    public ResponseEntity<ApiResponse<RefreshTokenResponse>> refreshToken(@Validated @RequestBody RefreshDto refreshDto) {
+        RefreshTokenResponse refreshTokenResponse = authService.refreshToken(refreshDto);
+        ApiResponse<RefreshTokenResponse> apiResponse = new ApiResponse<>(refreshTokenResponse);
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
 }
