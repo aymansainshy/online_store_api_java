@@ -7,20 +7,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
-@Configuration
-@Order(1)
-@AllArgsConstructor
+//@Configuration
+//@Order(1)
 public class FilterConfig {
 
 
-    @Bean
-    public FilterRegistrationBean<LoggingFilter> loggingFilter() {
-        FilterRegistrationBean<LoggingFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new LoggingFilter());
-        registrationBean.addUrlPatterns("/*");
-        registrationBean.setOrder(1); // Set the order
-        return registrationBean;
-    }
+//    @Bean
+//    public FilterRegistrationBean<LoggingFilter> loggingFilter() {
+//        FilterRegistrationBean<LoggingFilter> registrationBean = new FilterRegistrationBean<>();
+//        registrationBean.setFilter(new LoggingFilter());
+//        registrationBean.addUrlPatterns("/*");
+//        registrationBean.setOrder(1); // Set the order
+//        return registrationBean;
+//    }
 
 //    @Bean
 //    public FilterRegistrationBean<JwtAuthenticationFilter> jwtAuthenticationFilter() {

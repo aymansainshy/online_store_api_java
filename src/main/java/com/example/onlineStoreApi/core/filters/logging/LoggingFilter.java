@@ -5,12 +5,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 
+@Component
+@Order(value = Ordered.HIGHEST_PRECEDENCE)
 public class LoggingFilter implements Filter {
     Logger logger = LoggerFactory.getLogger(LoggingFilter.class);
 
@@ -22,9 +25,9 @@ public class LoggingFilter implements Filter {
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        logger.error("Logging Request  {} : {}", req.getMethod(), req.getRequestURI());
+        logger.info("Logging Request  {} : {}", req.getMethod(), req.getRequestURI());
         chain.doFilter(request, response);
-        logger.error("Logging Response :{}", res.getContentType());
+        logger.info("Logging Response :{}", res.getContentType());
     }
 
 }
