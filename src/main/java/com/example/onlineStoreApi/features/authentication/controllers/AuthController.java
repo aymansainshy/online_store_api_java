@@ -6,6 +6,7 @@ import com.example.onlineStoreApi.features.authentication.services.AuthService;
 import com.example.onlineStoreApi.features.authentication.utils.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> login(
-            @Validated
+            @Valid
             @RequestBody
             LoginDto loginDto) {
         AuthResponse authResponse = authService.login(loginDto);
@@ -34,7 +35,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<AuthResponse>> register(
-            @Validated
+            @Valid
             @RequestBody
             RegisterDto registerDto) {
         AuthResponse authResponse = authService.register(registerDto);
@@ -45,7 +46,7 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<RefreshTokenResponse>> refreshToken(
-            @Validated
+            @Valid
             @RequestBody
             RefreshDto refreshDto) {
         RefreshTokenResponse refreshTokenResponse = authService.refreshToken(refreshDto);
