@@ -1,4 +1,4 @@
-package com.example.onlineStoreApi.core.security.authentication;
+package com.example.onlineStoreApi.core.filters.authentication;
 
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.AuthorizationException;
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.CustomException;
@@ -20,6 +20,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,34 +38,40 @@ import java.util.Objects;
 
 
 @Component
-@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
-    private final JwtService jwtService;
+    private JwtService jwtService;
     @Autowired
-    private final CustomUserDetailsService userDetailsService;
+    private CustomUserDetailsService userDetailsService;
 
 
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain
+            @NonNull FilterChain filterChain // Equivalent to next()
     ) throws ServletException, IOException {
         try {
             final String authHeader = request.getHeader("Authorization");
             final String authToken;
             final String userEmail;
-
+            System.out.println(" _______--__----__-___-----_----  JwtAuthenticationFilter  - Before");
 
             // ** IS TOKEN NOT PROVIDED **
-            // Check if the token is null or the token Sent is not start with Bearer ....
+            // Check if the token is null or the token send is not start with Bearer ....
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                throw new AuthorizationException("Token Not Provided");
-//                filterChain.doFilter(request, response);
-//                return;
+                String reqPath = request.getRequestURI();
+
+                if (reqPath.endsWith("/auth/login") || reqPath.endsWith("/auth/register") || reqPath.endsWith("/auth/refresh")) {
+                    filterChain.doFilter(request, response); // next()
+                    System.out.println(" _______--__----__-___-----_----  JwtAuthenticationFilter  - After");
+                    return;
+                } else {
+                    throw new AuthorizationException("Token Not Provided");
+                }
             }
+
 
             authToken = authHeader.substring(7);
 

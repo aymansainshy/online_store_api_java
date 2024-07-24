@@ -1,6 +1,8 @@
-package com.example.onlineStoreApi.core.security.authentication;
+package com.example.onlineStoreApi.core.security;
 
 
+import com.example.onlineStoreApi.core.filters.authentication.JwtAuthenticationFilter;
+import com.example.onlineStoreApi.core.filters.logging.LoggingFilter;
 import com.example.onlineStoreApi.features.users.utils.UserRoles;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class ApplicationSecurityConfig {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
+//    @Autowired
+//    private LoggingFilter loggingFilter;
+
     @Autowired
     private AuthenticationProvider authenticationProvider;
 
@@ -48,6 +53,8 @@ public class ApplicationSecurityConfig {
                 )
                 .authenticationProvider(authenticationProvider);
 
+
+//        httpSecurity.addFilterBefore(loggingFilter, UsernamePasswordAuthenticationFilter.class);
         httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 

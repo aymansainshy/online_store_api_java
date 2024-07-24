@@ -1,5 +1,6 @@
 package com.example.onlineStoreApi.core.security.userDetailsServices;
 
+import com.example.onlineStoreApi.core.exceptions.customeExceptions.ResourceNotFoundException;
 import com.example.onlineStoreApi.features.users.models.User;
 import com.example.onlineStoreApi.features.users.repositories.UserRepository;
 import com.example.onlineStoreApi.services.cache.CacheService;
@@ -29,7 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     // This provides new instance of UserDetailsService e with custom implementation to LoadUserByUsername.
     @Override
-    public AppUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public AppUserDetails loadUserByUsername(String username) throws ResourceNotFoundException {
 
         // Try to fetch user form cache if not then fetched from Repository.
         User cachedUser = (User) cacheService.get(username);
@@ -48,7 +49,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             // if not cached fetched from Repository and cached .
             User user = userRepository
                     .findByEmail(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
 
             cacheService.put(user.getEmail(), user);
 
