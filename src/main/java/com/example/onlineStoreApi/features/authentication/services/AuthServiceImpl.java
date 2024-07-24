@@ -91,7 +91,7 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public RefreshTokenResponse refreshToken(RefreshDto refreshDto) throws IllegalStateException {
+    public RefreshTokenResponse refreshToken(RefreshDto refreshDto)  {
         System.out.println("___-_--________-___ ____REFRESH__-__-_-_-_-_-________-_---_- " + refreshDto.getRefresh());
         var username = jwtService.extractUsername(refreshDto.getRefresh());
 

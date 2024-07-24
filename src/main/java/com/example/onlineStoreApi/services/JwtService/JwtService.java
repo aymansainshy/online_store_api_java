@@ -3,9 +3,11 @@ package com.example.onlineStoreApi.services.JwtService;
 import com.example.onlineStoreApi.features.users.models.User;
 import com.example.onlineStoreApi.services.cache.CacheService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.io.IOException;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -101,6 +103,7 @@ public class JwtService {
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
+
     }
 
 
