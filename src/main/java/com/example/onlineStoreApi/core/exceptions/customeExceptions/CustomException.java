@@ -1,6 +1,6 @@
 package com.example.onlineStoreApi.core.exceptions.customeExceptions;
 
-import com.example.onlineStoreApi.core.exceptions.GlobalExceptionResponse;
+import com.example.onlineStoreApi.core.exceptions.responses.GlobalExceptionResponse;
 import com.example.onlineStoreApi.core.utils.ApiResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

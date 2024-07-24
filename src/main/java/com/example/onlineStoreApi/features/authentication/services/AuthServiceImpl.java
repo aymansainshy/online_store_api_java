@@ -3,15 +3,23 @@ package com.example.onlineStoreApi.features.authentication.services;
 
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.ConflictException;
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.ResourceNotFoundException;
+import com.example.onlineStoreApi.core.security.userDetailsServices.AppUserDetails;
 import com.example.onlineStoreApi.features.authentication.utils.*;
 import com.example.onlineStoreApi.features.users.models.User;
 import com.example.onlineStoreApi.features.users.repositories.UserRepository;
 import com.example.onlineStoreApi.services.JwtService.JwtService;
+import com.example.onlineStoreApi.services.cache.CacheService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -20,15 +28,14 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
-
     @Autowired
-    private final UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
     @Autowired
     private final PasswordEncoder passwordEncoder;
     @Autowired
-    private final JwtService jwtService;
+    private final UserRepository userRepository;
     @Autowired
-    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
 
     public AuthResponse login(LoginDto loginDto) {
@@ -91,10 +98,8 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public RefreshTokenResponse refreshToken(RefreshDto refreshDto)  {
-        System.out.println("___-_--________-___ ____REFRESH__-__-_-_-_-_-________-_---_- " + refreshDto.getRefresh());
+    public RefreshTokenResponse refreshToken(RefreshDto refreshDto) {
         var username = jwtService.extractUsername(refreshDto.getRefresh());
-
 
         String tokenType = jwtService.extractTokenType(refreshDto.getRefresh());
         Date expiration = jwtService.extractExpiration(refreshDto.getRefresh());
@@ -118,6 +123,15 @@ public class AuthServiceImpl implements AuthService {
                 .refreshToken(refreshToken)
                 .build();
 
+    }
+
+    @Override
+    public void logout(String token, HttpServletRequest request, HttpServletResponse response) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+        logoutHandler.logout(request, response, authentication);
+        SecurityContextHolder.getContext().setAuthentication(null);
+        jwtService.blacklistToken(token);
     }
 
 }

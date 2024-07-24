@@ -1,4 +1,4 @@
-package com.example.onlineStoreApi.core.exceptions;
+package com.example.onlineStoreApi.core.exceptions.responses;
 
 
 import lombok.Data;
