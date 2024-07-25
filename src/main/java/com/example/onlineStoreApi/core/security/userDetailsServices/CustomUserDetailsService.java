@@ -53,6 +53,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
             cacheService.put(user.getEmail(), user);
 
+
+//            org.springframework.security.core.userdetails.User.builder().authorities();
+
             return AppUserDetails
                     .builder()
                     .id(user.getId())

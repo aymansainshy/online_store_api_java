@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 
-@Component
-@Order(value = Ordered.HIGHEST_PRECEDENCE)
+//@Component
+//@Order(value = Ordered.HIGHEST_PRECEDENCE)
 public class LoggingFilter implements Filter {
     Logger logger = LoggerFactory.getLogger(LoggingFilter.class);
 
@@ -25,9 +25,8 @@ public class LoggingFilter implements Filter {
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        logger.info("Logging Request  {} : {}", req.getMethod(), req.getRequestURI());
+        logger.info("Logging Request  {} : {}\n", req.getMethod(), req.getRequestURI());
         chain.doFilter(request, response);
-        logger.info("Logging Response :{}", res.getContentType());
+        logger.info("Logging Response : {}\n", res.getContentType());
     }
-
 }

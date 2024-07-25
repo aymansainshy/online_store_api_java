@@ -30,14 +30,14 @@ public class ApplicationSecurityConfig {
     @Autowired
     private final AuthenticationProvider authenticationProvider;
 
-//    @Autowired
-//    private final LoggingFilter loggingFilter;
 
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
-        httpSecurity.csrf(AbstractHttpConfigurer::disable)
+        httpSecurity
+                .csrf(AbstractHttpConfigurer::disable)
+//                .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         // Auth Feature
                         .requestMatchers("api/v1/auth/**").permitAll()
@@ -55,7 +55,6 @@ public class ApplicationSecurityConfig {
                 .authenticationProvider(authenticationProvider);
 
 
-//        httpSecurity.addFilterBefore(loggingFilter, UsernamePasswordAuthenticationFilter.class);
         httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 
