@@ -1,10 +1,7 @@
 package com.example.onlineStoreApi.core.exceptions;
 
 
-import com.example.onlineStoreApi.core.exceptions.customeExceptions.AuthorizationException;
-import com.example.onlineStoreApi.core.exceptions.customeExceptions.CustomException;
-import com.example.onlineStoreApi.core.exceptions.customeExceptions.InternalServerException;
-import com.example.onlineStoreApi.core.exceptions.customeExceptions.ValidationException;
+import com.example.onlineStoreApi.core.exceptions.customeExceptions.*;
 import com.example.onlineStoreApi.core.exceptions.responses.GlobalExceptionResponse;
 import com.example.onlineStoreApi.core.exceptions.responses.ValidationExceptionResponse;
 import com.example.onlineStoreApi.core.utils.ApiResponse;
@@ -12,6 +9,8 @@ import io.jsonwebtoken.JwtException;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -64,17 +63,33 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<GlobalExceptionResponse>> handleGlobalException(Exception exception, WebRequest request) {
         System.out.println("CustomException_____---_-_-----------______-___--__-__-_--_---" + (exception instanceof CustomException));
+        System.out.println("CustomException_____---_-_-----------______-___--__-__-_--_---" + (exception));
 
-        if (exception instanceof CustomException) {
-            return ResponseEntity.status(((CustomException) exception).getStatus()).body(((CustomException) exception).errorResponse());
+        switch (exception) {
+            case CustomException customException -> {
+                return ResponseEntity.status(customException.getStatus()).body(customException.errorResponse());
+            }
 
-        } else if (exception instanceof JwtException) {
-            AuthorizationException authorizationException = new AuthorizationException(exception.getMessage());
-            return ResponseEntity.status(authorizationException.getStatus()).body(authorizationException.errorResponse());
+            case BadCredentialsException badCredentialsException -> {
+                InvalidCredentialException invalidCredentialException = new InvalidCredentialException(badCredentialsException.getMessage());
+                return ResponseEntity.status(invalidCredentialException.getStatus()).body(invalidCredentialException.errorResponse());
+            }
 
-        } else {
-            InternalServerException internalServerException = new InternalServerException(exception.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalServerException.errorResponse());
+            case InternalAuthenticationServiceException internalAuthenticationServiceException -> {
+                ResourceNotFoundException resourceNotFoundException = new ResourceNotFoundException(internalAuthenticationServiceException.getMessage());
+                return ResponseEntity.status(resourceNotFoundException.getStatus()).body(resourceNotFoundException.errorResponse());
+            }
+
+            case JwtException jwtException -> {
+                AuthorizationException authorizationException = new AuthorizationException(jwtException.getMessage());
+                return ResponseEntity.status(authorizationException.getStatus()).body(authorizationException.errorResponse());
+            }
+
+            case null, default -> {
+                assert exception != null;
+                InternalServerException internalServerException = new InternalServerException(exception.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalServerException.errorResponse());
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ package com.example.onlineStoreApi.features.authentication.services;
 
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.AuthorizationException;
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.ConflictException;
+import com.example.onlineStoreApi.core.exceptions.customeExceptions.InvalidCredentialException;
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.ResourceNotFoundException;
 import com.example.onlineStoreApi.core.security.userDetailsServices.AppUserDetails;
 import com.example.onlineStoreApi.features.authentication.utils.*;
@@ -42,32 +43,37 @@ public class AuthServiceImpl implements AuthService {
 
 
     public AuthResponse login(LoginDto loginDto) {
-        authenticationManager.authenticate(
+        Authentication authenticationResult = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginDto.getEmail(),
-                        loginDto.getPassword()
+                        loginDto.email(),
+                        loginDto.password()
                 )
         );
-        Optional<User> existingUser = userRepository.findByEmail(loginDto.getEmail());
 
-        if (existingUser.isEmpty()) {
-            throw new ResourceNotFoundException("User not found");
-        }
+        if (authenticationResult.isAuthenticated()) {
+            Optional<User> existingUser = userRepository.findByEmail(loginDto.email());
 
-        String accessToken = jwtService.generateAccessToken(existingUser.get());
-        String refreshToken = jwtService.generateRefreshToken(existingUser.get());
+            if (existingUser.isEmpty()) {
+                throw new ResourceNotFoundException("User not found");
+            }
 
-        return AuthResponse
-                .builder()
-                .user(existingUser.get())
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+            String accessToken = jwtService.generateAccessToken(existingUser.get());
+            String refreshToken = jwtService.generateRefreshToken(existingUser.get());
+
+            return AuthResponse
+                    .builder()
+                    .user(existingUser.get())
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .build();
 
 //        boolean isMatch = passwordEncoder.matches(loginDto.getPassword(), existingUser.get().getPassword());
 //        if (!isMatch) {
 //            throw new IllegalStateException("Wrong Credential");
 //        }
+        } else {
+            throw new InvalidCredentialException();
+        }
 
     }
 

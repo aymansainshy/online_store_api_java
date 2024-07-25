@@ -6,14 +6,25 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@Data
-@AllArgsConstructor
-public class LoginDto {
-    @Email(message = "Invalid email format")
-    @NotBlank(message = "Email is mandatory")
-    private String email;
+//@Data
+//@AllArgsConstructor
+//public class LoginDto {
+//    @Email(message = "Invalid email format")
+//    @NotBlank(message = "Email is mandatory")
+//    private String email;
+//
+//    @NotBlank(message = "Password is mandatory")
+//    @Size(min = 6, max = 20, message = "Password must be between 6 and 20 characters")
+//    private String password;
+//}
 
-    @NotBlank(message = "Password is mandatory")
-    @Size(min = 6, max = 20, message = "Password must be between 6 and 20 characters")
-    private String password;
+
+public record LoginDto(
+        @Email(message = "Invalid email format")
+        @NotBlank(message = "Email is mandatory")
+        String email,
+
+        @NotBlank(message = "Password is mandatory")
+        @Size(min = 6, max = 20, message = "Password must be between 6 and 20 characters")
+        String password) {
 }
