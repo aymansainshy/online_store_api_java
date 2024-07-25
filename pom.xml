@@ -34,7 +34,7 @@
 
     <properties>
         <!--  Java Version -->
-        <java.version>22</java.version>
+        <java.version>21</java.version>
 
         <spring.version>6.1.9</spring.version>
 
@@ -140,6 +140,8 @@
             <artifactId>spring-webflux</artifactId>
             <scope>test</scope>
         </dependency>
+
+
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
