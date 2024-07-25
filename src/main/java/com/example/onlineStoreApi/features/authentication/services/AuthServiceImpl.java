@@ -66,11 +66,6 @@ public class AuthServiceImpl implements AuthService {
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
                     .build();
-
-//        boolean isMatch = passwordEncoder.matches(loginDto.getPassword(), existingUser.get().getPassword());
-//        if (!isMatch) {
-//            throw new IllegalStateException("Wrong Credential");
-//        }
         } else {
             throw new InvalidCredentialException();
         }
@@ -112,9 +107,6 @@ public class AuthServiceImpl implements AuthService {
         String username = jwtService.extractUsername(refreshDto.getRefresh());
 
         String tokenType = jwtService.extractTokenType(refreshDto.getRefresh());
-        Date expiration = jwtService.extractExpiration(refreshDto.getRefresh());
-        System.out.println("___-_--________-___ ____RE_TOKEN TP__-__-_-_-_-_-________-_---_- " + tokenType);
-        System.out.println("___-_--________-___ ____RE_TOKEN EX-__-_-_-_-_-________-_---_- " + expiration);
 
         if (!Objects.equals(tokenType, TokenType.REFRESH)) {
             throw new AuthorizationException(String.format("%s token forbidden !", tokenType));
@@ -134,14 +126,14 @@ public class AuthServiceImpl implements AuthService {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
-
     }
+
 
     @Override
     public void logout(String token, HttpServletRequest request, HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
-        logoutHandler.logout(request, response, authentication);
+        SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
+        securityContextLogoutHandler.logout(request, response, authentication);
         jwtService.blacklistToken(token);
     }
 

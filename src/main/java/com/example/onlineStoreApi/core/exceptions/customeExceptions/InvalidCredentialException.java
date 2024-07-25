@@ -6,16 +6,16 @@ public class InvalidCredentialException extends CustomException {
     public InvalidCredentialException(String message) {
         super(
                 message,
-                HttpStatus.NOT_ACCEPTABLE,
-                HttpStatus.NOT_ACCEPTABLE.value()
+                HttpStatus.UNAUTHORIZED,
+                HttpStatus.UNAUTHORIZED.value()
         );
     }
 
     public InvalidCredentialException() {
         super(
-                HttpStatus.NOT_ACCEPTABLE.getReasonPhrase(),
-                HttpStatus.NOT_ACCEPTABLE,
-                HttpStatus.NOT_ACCEPTABLE.value()
+                "invalid credential",
+                HttpStatus.UNAUTHORIZED,
+                HttpStatus.UNAUTHORIZED.value()
         );
     }
 }

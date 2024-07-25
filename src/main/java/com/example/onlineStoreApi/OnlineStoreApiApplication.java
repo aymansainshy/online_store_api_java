@@ -17,6 +17,6 @@ public class OnlineStoreApiApplication {
         // meaning only one instance is created and shared across the application.
         InMemoryCache inMemoryCache1 = context.getBean(InMemoryCache.class);
         InMemoryCache inMemoryCache2 = context.getBean(InMemoryCache.class);
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  " + (inMemoryCache1 == inMemoryCache2));
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  " + (inMemoryCache1 == inMemoryCache2));
     }
 }

@@ -53,21 +53,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // ** IS TOKEN NOT PROVIDED **
             // Check if the token is null or the token send is not start with Bearer ....
-            String reqPath = request.getRequestURI();
-            boolean publicPath = reqPath.endsWith("/auth/login") || reqPath.endsWith("/auth/register") || reqPath.endsWith("/auth/refresh");
+            String requestURI = request.getRequestURI();
+            boolean isGoingToPublicRoutes = requestURI.endsWith("/auth/login") || requestURI.endsWith("/auth/register") || requestURI.endsWith("/auth/refresh");
 
             // If the user going to public path but not provide token let go, else Throw exception
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                if (publicPath) {
+                if (isGoingToPublicRoutes) {
                     filterChain.doFilter(request, response); // next()
                     return;
                 } else {
-                    throw new AuthorizationException("Token Not Provided");
+                    throw new AuthorizationException("Please login to get access!");
                 }
             }
 
             // If the user going to public path, and he provide Token in request let go
-            if (publicPath) {
+            if (isGoingToPublicRoutes) {
                 filterChain.doFilter(request, response); // next()
                 return;
             }
@@ -79,16 +79,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // ** IS TOKEN NOT BLACKLISTED **
             // Check if the token is not blacklisted ....
             if (jwtService.isTokenBlacklisted(authToken)) {
-                throw new AuthorizationException("Token Blacklisted!");
+                throw new AuthorizationException("Token blacklisted!");
             }
 
 
             // ** IS TOKEN IS ACCESS TOKEN TYPE **
             // Extract Token type from JwtPayload aka Claim is Not RefreshToken ....
             String tokenType = jwtService.extractTokenType(authToken);
-            Date expiration = jwtService.extractExpiration(authToken);
             System.out.println("___-_--________-___ ______-__-_-_-_-_-________-_---_- " + tokenType);
-            System.out.println("___-_--________-___ ______-__-_-_-_-_-________-_---_- " + expiration);
 
             if (!Objects.equals(tokenType, TokenType.ACCESS)) {
                 throw new AuthorizationException(String.format("%s token forbidden !", tokenType));
@@ -113,11 +111,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     UsernamePasswordAuthenticationToken usernamePasswordAuthToken =
                             new UsernamePasswordAuthenticationToken(
-                                    userDetails,
-                                    null,
+                                    userDetails.getUsername(),
+                                    userDetails.getPassword(),
                                     userDetails.getAuthorities()
                             );
 
+                    // This for track Who is logged into system setDetails(....)
                     usernamePasswordAuthToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthToken);
@@ -126,8 +125,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         } catch (Exception ex) {
             /*
-             * @Exceptions thrown in filters are not automatically handled by Spring's
-             * @ControllerAdvice and @ExceptionHandler mechanisms.
+             * @Exceptions thrown in filters are not automatically handled by
+             * Spring's @ControllerAdvice and @ExceptionHandler mechanisms.
              * Instead, you need to handle these exceptions within the filter
              * itself or use a custom Filter for centralized exception handling.
              */
