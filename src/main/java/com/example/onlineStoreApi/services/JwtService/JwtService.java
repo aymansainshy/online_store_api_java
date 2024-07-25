@@ -74,6 +74,7 @@ public class JwtService {
         return generateToken(
                 user.getEmail(),
                 new HashMap<>() {{
+                    //  put("userId", user.getId());
                     put("type", "access");
                 }},
                 new Date(System.currentTimeMillis() + 1000 * 60 * 20)); // 20 minutes

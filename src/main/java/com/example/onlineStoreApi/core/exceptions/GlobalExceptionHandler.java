@@ -1,12 +1,14 @@
 package com.example.onlineStoreApi.core.exceptions;
 
 
+import com.example.onlineStoreApi.core.exceptions.customeExceptions.AuthorizationException;
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.CustomException;
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.InternalServerException;
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.ValidationException;
 import com.example.onlineStoreApi.core.exceptions.responses.GlobalExceptionResponse;
 import com.example.onlineStoreApi.core.exceptions.responses.ValidationExceptionResponse;
 import com.example.onlineStoreApi.core.utils.ApiResponse;
+import io.jsonwebtoken.JwtException;
 import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,8 +67,13 @@ public class GlobalExceptionHandler {
 
         if (exception instanceof CustomException) {
             return ResponseEntity.status(((CustomException) exception).getStatus()).body(((CustomException) exception).errorResponse());
+
+        } else if (exception instanceof JwtException) {
+            AuthorizationException authorizationException = new AuthorizationException(exception.getMessage());
+            return ResponseEntity.status(authorizationException.getStatus()).body(authorizationException.errorResponse());
+
         } else {
-            InternalServerException internalServerException = new InternalServerException();
+            InternalServerException internalServerException = new InternalServerException(exception.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalServerException.errorResponse());
         }
     }

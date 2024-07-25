@@ -1,6 +1,7 @@
 package com.example.onlineStoreApi.features.authentication.services;
 
 
+import com.example.onlineStoreApi.core.exceptions.customeExceptions.AuthorizationException;
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.ConflictException;
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.ResourceNotFoundException;
 import com.example.onlineStoreApi.core.security.userDetailsServices.AppUserDetails;
@@ -8,6 +9,7 @@ import com.example.onlineStoreApi.features.authentication.utils.*;
 import com.example.onlineStoreApi.features.users.models.User;
 import com.example.onlineStoreApi.features.users.repositories.UserRepository;
 import com.example.onlineStoreApi.services.JwtService.JwtService;
+import com.example.onlineStoreApi.services.JwtService.TokenType;
 import com.example.onlineStoreApi.services.cache.CacheService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,6 +25,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -99,14 +102,17 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public RefreshTokenResponse refreshToken(RefreshDto refreshDto) {
-        var username = jwtService.extractUsername(refreshDto.getRefresh());
+
+        String username = jwtService.extractUsername(refreshDto.getRefresh());
 
         String tokenType = jwtService.extractTokenType(refreshDto.getRefresh());
         Date expiration = jwtService.extractExpiration(refreshDto.getRefresh());
-        boolean isExpired = jwtService.isTokenExpired(refreshDto.getRefresh());
-        System.out.println("___-_--________-___ ____REFRESH__-__-_-_-_-_-________-_---_- " + tokenType);
-        System.out.println("___-_--________-___ ____REFRESH-__-_-_-_-_-________-_---_- " + expiration);
-        System.out.println("___-_--________-___ ____REFRESH-__-_-_-_-_-________-_---_- " + isExpired);
+        System.out.println("___-_--________-___ ____RE_TOKEN TP__-__-_-_-_-_-________-_---_- " + tokenType);
+        System.out.println("___-_--________-___ ____RE_TOKEN EX-__-_-_-_-_-________-_---_- " + expiration);
+
+        if (!Objects.equals(tokenType, TokenType.REFRESH)) {
+            throw new AuthorizationException(String.format("%s token forbidden !", tokenType));
+        }
 
         Optional<User> existingUser = userRepository.findByEmail(username);
 
@@ -130,7 +136,6 @@ public class AuthServiceImpl implements AuthService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
         logoutHandler.logout(request, response, authentication);
-        SecurityContextHolder.getContext().setAuthentication(null);
         jwtService.blacklistToken(token);
     }
 

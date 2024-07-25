@@ -10,4 +10,12 @@ public class InternalServerException extends CustomException {
                 HttpStatus.INTERNAL_SERVER_ERROR.value()
         );
     }
+
+    public InternalServerException(String message) {
+        super(
+                message,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                HttpStatus.INTERNAL_SERVER_ERROR.value()
+        );
+    }
 }

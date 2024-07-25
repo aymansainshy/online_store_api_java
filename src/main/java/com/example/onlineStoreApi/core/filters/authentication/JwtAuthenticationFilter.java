@@ -6,6 +6,7 @@ import com.example.onlineStoreApi.core.exceptions.customeExceptions.InternalServ
 import com.example.onlineStoreApi.core.security.userDetailsServices.AppUserDetails;
 import com.example.onlineStoreApi.core.security.userDetailsServices.CustomUserDetailsService;
 import com.example.onlineStoreApi.services.JwtService.JwtService;
+import com.example.onlineStoreApi.services.JwtService.TokenType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtException;
@@ -72,8 +73,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
 
-
-
             authToken = authHeader.substring(7);
 
 
@@ -91,8 +90,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             System.out.println("___-_--________-___ ______-__-_-_-_-_-________-_---_- " + tokenType);
             System.out.println("___-_--________-___ ______-__-_-_-_-_-________-_---_- " + expiration);
 
-            if (Objects.equals(tokenType, "refresh")) {
-                throw new AuthorizationException("Refresh token forbidden !");
+            if (!Objects.equals(tokenType, TokenType.ACCESS)) {
+                throw new AuthorizationException(String.format("%s token forbidden !", tokenType));
             }
 
 

@@ -51,6 +51,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                     .findByEmail(username)
                     .orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
 
+            System.out.println("___-_____--_------_Preform CACHe USER----_-_---_--_-_-_---_-_-__-__ ");
             cacheService.put(user.getEmail(), user);
 
 
