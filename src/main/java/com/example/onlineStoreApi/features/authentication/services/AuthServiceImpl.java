@@ -43,33 +43,28 @@ public class AuthServiceImpl implements AuthService {
 
 
     public AuthResponse login(LoginDto loginDto) {
-        Authentication authenticationResult = authenticationManager.authenticate(
+        authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.email(),
                         loginDto.password()
                 )
         );
 
-        if (authenticationResult.isAuthenticated()) {
-            Optional<User> existingUser = userRepository.findByEmail(loginDto.email());
+        Optional<User> existingUser = userRepository.findByEmail(loginDto.email());
 
-            if (existingUser.isEmpty()) {
-                throw new ResourceNotFoundException("User not found");
-            }
-
-            String accessToken = jwtService.generateAccessToken(existingUser.get());
-            String refreshToken = jwtService.generateRefreshToken(existingUser.get());
-
-            return AuthResponse
-                    .builder()
-                    .user(existingUser.get())
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken)
-                    .build();
-        } else {
-            throw new InvalidCredentialException();
+        if (existingUser.isEmpty()) {
+            throw new ResourceNotFoundException("User not found");
         }
 
+        String accessToken = jwtService.generateAccessToken(existingUser.get());
+        String refreshToken = jwtService.generateRefreshToken(existingUser.get());
+
+        return AuthResponse
+                .builder()
+                .user(existingUser.get())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
 
@@ -87,14 +82,14 @@ public class AuthServiceImpl implements AuthService {
                 .password(passwordEncoder.encode(registerDto.getPassword()))
                 .build();
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
-        String accessToken = jwtService.generateAccessToken(user);
-        String refreshToken = jwtService.generateRefreshToken(user);
+        String accessToken = jwtService.generateAccessToken(savedUser);
+        String refreshToken = jwtService.generateRefreshToken(savedUser);
 
         return AuthResponse
                 .builder()
-                .user(user)
+                .user(savedUser)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
@@ -104,13 +99,13 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public RefreshTokenResponse refreshToken(RefreshDto refreshDto) {
 
-        String username = jwtService.extractUsername(refreshDto.getRefresh());
-
         String tokenType = jwtService.extractTokenType(refreshDto.getRefresh());
 
         if (!Objects.equals(tokenType, TokenType.REFRESH)) {
             throw new AuthorizationException(String.format("%s token forbidden !", tokenType));
         }
+
+        String username = jwtService.extractUsername(refreshDto.getRefresh());
 
         Optional<User> existingUser = userRepository.findByEmail(username);
 
