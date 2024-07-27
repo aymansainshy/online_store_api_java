@@ -138,7 +138,7 @@ class AuthServiceTest {
         }
 
         @Test
-        void testLogin_When_Enter_Invalid_Credential_Then_Should_Throw_InvalidCredentialsException() {
+        void testLogin_When_Enter_Invalid_Credential_Then_Should_Throw_AuthorizationException() {
             /* ARRANGE */
             when(authenticationManager.authenticate(any(Authentication.class))).thenThrow(
                     // This will be thrown form authentication manager if wrong credential passes
