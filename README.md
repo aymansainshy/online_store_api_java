@@ -11,7 +11,7 @@
   should be singleton, you can use the @Scope annotation with the <sub> ConfigurableBeanFactory.SCOPE_SINGLETON </sub>
   constant.
 
-``` 
+```Java
     public interface MyService {
         void performAction();
     }
@@ -28,7 +28,7 @@
 ```
 * Exceptions thrown in filters are not automatically handled by Spring's @ControllerAdvice and @ExceptionHandler mechanisms. Instead, you need to handle these exceptions within the filter itself or use a custom Filter for centralized exception handling.
 
-```
+```Java
 @WebFilter("/*")
 public class ExceptionHandlingFilter implements Filter {
 
