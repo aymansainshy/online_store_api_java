@@ -1,0 +1,35 @@
+services:
+  postgres:
+    container_name: ps_container
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: online_store_java
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres:/var/lib/postgres/data
+    networks:
+      - online-store-network
+
+  spring-boot-app:
+    container_name: online_store_container
+    image: online-store-api
+    ports:
+      - "8080:8080"
+    networks:
+      - online-store-network
+    depends_on:
+      - postgres
+
+
+volumes:
+  postgres:
+
+
+networks:
+  online-store-network:
+    driver: bridge
+
+
