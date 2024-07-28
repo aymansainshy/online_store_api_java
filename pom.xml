@@ -41,8 +41,15 @@
         <spring-security.version>6.3.1</spring-security.version>
     </properties>
 
-    <!--  Dependencies -->
+
     <dependencies>
+
+        <!-- Starter for building web application  -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
 
         <!-- Database -->
         <dependency>
@@ -118,11 +125,6 @@
         </dependency>
 
 
-        <!--   -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
 
 
         <!-- This Starter include all the test tool - Junit - Mockito .. etc!  -->
@@ -133,7 +135,7 @@
         </dependency>
 
 
-        <!--   -->
+        <!-- For asynchronous programming  -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webflux</artifactId>
