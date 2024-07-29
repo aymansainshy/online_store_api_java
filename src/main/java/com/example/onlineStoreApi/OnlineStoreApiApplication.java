@@ -20,3 +20,16 @@ public class OnlineStoreApiApplication {
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  " + (inMemoryCache1 == inMemoryCache2));
     }
 }
+
+
+
+// users (
+//        primary key (id)
+//        first_name varchar(255),
+//        last_name varchar(255),
+//        email varchar(255) unique,
+//        password varchar(255),
+//        is_active boolean,
+//        id bigint not null,
+//        roles varchar(255) array,
+//       )
