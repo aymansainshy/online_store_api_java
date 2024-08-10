@@ -25,16 +25,6 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(ConfigDataResourceNotFoundException.class)
-    public ResponseEntity<?> handleResourceNotFoundException(
-            ConfigDataResourceNotFoundException exception,
-            WebRequest request) {
-        System.out.println("ConfigDataResourceNotFoundException_____---_-_-----------______-___--__-__-_--_---" + (exception));
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                new ApiResponse<>(0, ":::::::::::ConfigDataResourceNotFoundException:::::", HttpStatus.NOT_FOUND.toString())
-        );
-    }
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -60,10 +50,10 @@ public class GlobalExceptionHandler {
     }
 
 
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<GlobalExceptionResponse>> handleGlobalException(Exception exception, WebRequest request) {
-        System.out.println("CustomException_____---_-_-----------______-___--__-__-_--_---" + (exception instanceof CustomException));
-        System.out.println("CustomException_____---_-_-----------______-___--__-__-_--_---" + (exception));
 
         switch (exception) {
             case CustomException customException -> {

@@ -5,7 +5,7 @@ import lombok.Data;
 /**
 * @Race_Condition
 * A race condition in Java (and in concurrent programming in general) occurs
-* when two or more threads can access shared data and they try to change it at the same time.
+* when two or more threads can access shared data, and they try to change it at the same time.
 */
 public class MultiThreads {
 
