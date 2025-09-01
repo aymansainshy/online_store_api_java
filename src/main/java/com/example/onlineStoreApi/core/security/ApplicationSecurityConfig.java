@@ -1,6 +1,8 @@
 package com.example.onlineStoreApi.core.security;
 
 
+import com.example.onlineStoreApi.core.exceptions.SecurityFilterChainExceptions.CustomAccessDeniedHandler;
+import com.example.onlineStoreApi.core.exceptions.SecurityFilterChainExceptions.CustomAuthenticationEntryPoint;
 import com.example.onlineStoreApi.core.filters.authentication.JwtAuthenticationFilter;
 import com.example.onlineStoreApi.core.filters.logging.LoggingFilter;
 import com.example.onlineStoreApi.core.security.userDetailsServices.CustomUserDetailsService;
@@ -39,6 +41,13 @@ public class ApplicationSecurityConfig {
     private final CustomUserDetailsService userDetailsService;
 
 
+    @Autowired
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
+    @Autowired
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
@@ -47,12 +56,12 @@ public class ApplicationSecurityConfig {
 //                .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         // Auth Feature
-                        .requestMatchers("api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/auth/**").permitAll()
 
                         // User Feature
-                        .requestMatchers(HttpMethod.GET, "api/v1/users").hasAnyAuthority(UserRoles.admin.name())
-                        .requestMatchers(HttpMethod.POST, "api/v1/users").hasAnyAuthority(UserRoles.admin.name(), UserRoles.staff.name())
-                        .requestMatchers("api/v1/users/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users").hasAnyAuthority(UserRoles.admin.name())
+                        .requestMatchers(HttpMethod.POST, "/api/v1/users").hasAnyAuthority(UserRoles.admin.name(), UserRoles.staff.name())
+                        .requestMatchers("/api/v1/users/**").authenticated()
 
                         .anyRequest().authenticated()
 
@@ -60,6 +69,10 @@ public class ApplicationSecurityConfig {
                 )
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)  // 401
+                        .accessDeniedHandler(customAccessDeniedHandler)            // 403
                 )
                 .authenticationProvider(authenticationProvider());
 

@@ -5,6 +5,7 @@ import com.example.onlineStoreApi.core.exceptions.customeExceptions.Authorizatio
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.ConflictException;
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.InvalidCredentialException;
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.ResourceNotFoundException;
+import com.example.onlineStoreApi.core.filters.logging.LoggingFilter;
 import com.example.onlineStoreApi.core.security.userDetailsServices.AppUserDetails;
 import com.example.onlineStoreApi.features.authentication.utils.*;
 import com.example.onlineStoreApi.features.users.models.User;
@@ -15,6 +16,8 @@ import com.example.onlineStoreApi.services.cache.CacheService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,16 +33,28 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+//@AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
-    @Autowired
+
+    Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
+
     private final AuthenticationManager authenticationManager;
-    @Autowired
     private final PasswordEncoder passwordEncoder;
-    @Autowired
     private final UserRepository userRepository;
-    @Autowired
     private final JwtService jwtService;
+
+    @Autowired
+    public AuthServiceImpl(
+            AuthenticationManager authenticationManager,
+            PasswordEncoder passwordEncoder,
+            UserRepository userRepository,
+            JwtService jwtService
+    ) {
+        this.authenticationManager = authenticationManager;
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+        this.jwtService = jwtService;
+    }
 
 
     public AuthResponse login(LoginDto loginDto) {
@@ -126,7 +141,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void logout(String token, HttpServletRequest request, HttpServletResponse response) {
+        AppUserDetails currentUser =  (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("Current User __--____--___---_-___---)))))" + currentUser);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("Current authentication __--____--___---_-___---))))))" + authentication);
         SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
         securityContextLogoutHandler.logout(request, response, authentication);
         jwtService.blacklistToken(token);

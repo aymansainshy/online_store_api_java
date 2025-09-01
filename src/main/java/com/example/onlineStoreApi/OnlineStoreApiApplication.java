@@ -3,9 +3,11 @@ package com.example.onlineStoreApi;
 import com.example.onlineStoreApi.services.cache.InMemoryCache;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.ApplicationContext;
 
 @SpringBootApplication
+@ServletComponentScan
 public class OnlineStoreApiApplication {
 
     public static void main(String[] args) {

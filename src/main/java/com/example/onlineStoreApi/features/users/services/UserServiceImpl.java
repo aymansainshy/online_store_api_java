@@ -52,6 +52,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(String id) {
         Optional<User> user = userRepository.findById(Long.parseLong(id));
+        System.out.println(user);
         if (user.isEmpty()) throw new ResourceNotFoundException("User Not found");
         return user.get();
     }

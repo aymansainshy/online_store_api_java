@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 
@@ -53,23 +54,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // ** IS TOKEN NOT PROVIDED **
             // Check if the token is null or the token send is not start with Bearer ....
-            String requestURI = request.getRequestURI();
-            boolean isGoingToPublicRoutes = requestURI.endsWith("/auth/login") || requestURI.endsWith("/auth/register") || requestURI.endsWith("/auth/refresh");
+//            String requestURI = request.getRequestURI();
+//            boolean isGoingToPublicRoutes = requestURI.endsWith("/auth/login") || requestURI.endsWith("/auth/register") || requestURI.endsWith("/auth/refresh");
+//
+//            // Allow all requests to public routes, regardless of token presence
+//            if (isGoingToPublicRoutes) {
+//                filterChain.doFilter(request, response); // next()
+//                return;
+//            }
 
-            // If the user going to public path but not provide token let go, else Throw exception
+
+            // Require Bearer token for non-public routes
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                if (isGoingToPublicRoutes) {
-                    filterChain.doFilter(request, response); // next()
-                    return;
-                } else {
-                    throw new AuthorizationException("Please login to get access!");
-                }
-            }
-
-            // If the user going to public path, and he provide Token in request let go
-            if (isGoingToPublicRoutes) {
                 filterChain.doFilter(request, response); // next()
                 return;
+                // Actually we can throw exception also, however it's better to just pass the request to next filterChain
+                // and let the SecurityChainFilter handle the unauthorized access.
+//                throw new AuthorizationException("Please login to get access!");
             }
 
 
@@ -79,7 +80,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // ** IS TOKEN NOT BLACKLISTED **
             // Check if the token is not blacklisted ....
             if (jwtService.isTokenBlacklisted(authToken)) {
-                throw new AuthorizationException("Token blacklisted!");
+                filterChain.doFilter(request, response); // next()
+                return;
+//                throw new AuthorizationException("Token blacklisted!");
             }
 
 
@@ -89,7 +92,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             System.out.println("___-_--________-___ ______-__-_-_-_-_-________-_---_- " + tokenType);
 
             if (!Objects.equals(tokenType, TokenType.ACCESS)) {
-                throw new AuthorizationException(String.format("%s token forbidden !", tokenType));
+                filterChain.doFilter(request, response); // next()
+                return;
+//                throw new AuthorizationException(String.format("%s token forbidden !", tokenType));
             }
 
 
@@ -111,8 +116,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     UsernamePasswordAuthenticationToken usernamePasswordAuthToken =
                             new UsernamePasswordAuthenticationToken(
-                                    userDetails.getUsername(),
-                                    userDetails.getPassword(),
+                                    userDetails,
+                                    null,
+//                                        userDetails.getPassword();
                                     userDetails.getAuthorities()
                             );
 
@@ -130,7 +136,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
              * Instead, you need to handle these exceptions within the filter
              * itself or use a custom Filter for centralized exception handling.
              */
-            System.out.println("___-_--____Authentication filter____-___ ______-__-__- ==>> " + (ex));
+            System.out.println("___-_--____JWT Authentication filter____-___ ______-__-__- ==>> " + (ex));
 
             if (ex instanceof CustomException) {
                 response.setStatus(((CustomException) ex).getStatus());
@@ -139,6 +145,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             } else if (ex instanceof JwtException) {
                 AuthorizationException authorizationException = new AuthorizationException(ex.getMessage());
+                System.out.println("r____-___ ______-__-__- ==>> " + (ex));
                 response.setStatus(authorizationException.getStatus());
                 response.setContentType("application/json");
                 response.getWriter().write(convertObjectToJson(authorizationException.errorResponse()));

@@ -1,5 +1,6 @@
 package com.example.onlineStoreApi.features.users.controllers;
 
+import com.example.onlineStoreApi.core.annotations.AuthRequired;
 import com.example.onlineStoreApi.core.security.authorization.Is;
 import com.example.onlineStoreApi.core.utils.ApiResponse;
 import com.example.onlineStoreApi.features.users.models.User;
@@ -28,6 +29,7 @@ public class UserController {
     }
 
 
+
     @GetMapping()
 //    @PreAuthorize(Is.ADMIN)
     public ResponseEntity<ApiResponse<List<User>>> getAllUsers() {
@@ -51,7 +53,8 @@ public class UserController {
 
 
     @GetMapping("/{id}")
-    @PreAuthorize(Is.ADMIN_OR_USER)
+    @AuthRequired
+    @PreAuthorize("@customSecurityExpression.isAdminOrUser(#id)")
     public ResponseEntity<ApiResponse<User>> getUserById(@PathVariable("id") String id) {
         User foundedUser = userService.getUserById(id);
         ApiResponse<User> apiResponse = new ApiResponse<>(foundedUser);

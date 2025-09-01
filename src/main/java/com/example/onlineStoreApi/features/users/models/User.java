@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 @Table(name = "users")
 @Data // == @Getter @Setter and more
 @Builder
-@AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor  // ✅ required by JPA
+@AllArgsConstructor // ✅ works with @Builder
 public class User { // public class User implements Serializable, UserDetails {}
     @Id
     @SequenceGenerator(

@@ -17,7 +17,7 @@ import java.util.List;
 public class UserConfig {
 
     @Autowired
-    private final PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Bean
     CommandLineRunner commandLineRunner(UserRepository userRepository) {

@@ -95,7 +95,7 @@ public class Reactive {
 //        reactive.testConcat().subscribe(System.out::println);
 
 //        reactive.testMerge().subscribe(System.out::println);
-        reactive.testZip().subscribe(System.out::println);
+        reactive.getLanguages().subscribe(System.out::println);
         Thread.sleep(8000);
 
     }

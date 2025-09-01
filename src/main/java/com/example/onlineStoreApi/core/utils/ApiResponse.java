@@ -6,9 +6,9 @@ import org.springframework.http.HttpStatusCode;
 
 @Data
 public class ApiResponse<T> {
-    private int code;
-    private T data;
-    private String message;
+    private final int code;
+    private final T data;
+    private final String message;
 
     public ApiResponse(T data, String message) {
         this.code = 1;

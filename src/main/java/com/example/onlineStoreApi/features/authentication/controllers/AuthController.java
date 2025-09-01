@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -21,9 +22,10 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     @Autowired
-    private final AuthService authService;
+    private AuthService authService;
 
     @PostMapping("/login")
+//    @Cacheable(cacheNames="user", key="#email")
     public ResponseEntity<ApiResponse<AuthResponse>> login(
             @Valid
             @RequestBody
