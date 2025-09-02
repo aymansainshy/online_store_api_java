@@ -7,6 +7,7 @@ import com.example.onlineStoreApi.core.exceptions.customeExceptions.InvalidCrede
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.ResourceNotFoundException;
 import com.example.onlineStoreApi.core.filters.logging.LoggingFilter;
 import com.example.onlineStoreApi.core.security.userDetailsServices.AppUserDetails;
+import com.example.onlineStoreApi.core.utils.StructuredLogger;
 import com.example.onlineStoreApi.features.authentication.utils.*;
 import com.example.onlineStoreApi.features.users.models.User;
 import com.example.onlineStoreApi.features.users.repositories.UserRepository;
@@ -29,6 +30,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -64,6 +66,10 @@ public class AuthServiceImpl implements AuthService {
                         loginDto.password()
                 )
         );
+
+        logger.debug("USER_LOGIN_SUCCESS email: {} data: {}", loginDto.email(), new Date());
+
+//        StructuredLogger.debug("USER_LOGIN_SUCCESS", "email: " + loginDto.email());
 
         Optional<User> existingUser = userRepository.findByEmail(loginDto.email());
 

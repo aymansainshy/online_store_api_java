@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+    <!-- read app.name and log path -->
+    <springProperty name="appName" source="app.name"/>
+    <springProperty name="logPath" source="logging.file.path"/>
+
+    <!-- DEVELOPMENT PROFILE -->
+    <springProfile name="dev">
+
+        <!-- Console appender (pretty JSON) -->
+        <appender name="DEV_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight([%-5level]) %cyan([%thread]) %yellow(%logger{25}) %green([${appName:-UNKNOWN}]) %green(%X) - %highlight(%msg){FATAL=bright red, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=blue} %n%n</pattern>
+            </encoder>
+        </appender>
+
+
+<!--        &lt;!&ndash; Console appender (pretty JSON) &ndash;&gt;-->
+<!--        <appender name="DEV_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">-->
+<!--            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">-->
+<!--                <providers>-->
+<!--                    <pattern>-->
+<!--                        <pattern>-->
+<!--                            <![CDATA[-->
+<!--                                {-->
+<!--                                   "app_name": "${appName:-UNKNOWN}",-->
+<!--                                   "level": "%level",-->
+<!--                                   "app_message": "%msg",-->
+<!--                                   "log_info": "%X{log_info:-}",-->
+<!--                                   "exception": "%exception{0}",-->
+<!--                                   "timestamp": "%date{ISO8601}"-->
+<!--                                }-->
+<!--                            ]]>-->
+<!--                        </pattern>-->
+<!--                    </pattern>-->
+<!--                    <prettyPrint>true</prettyPrint> &lt;!&ndash; ✅ pretty in console &ndash;&gt;-->
+<!--                </providers>-->
+<!--            </encoder>-->
+<!--        </appender>-->
+
+
+        <!-- File appender (compact JSON) -->
+        <appender name="DEV_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${logPath}/dev-app.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${logPath}/dev-app.%d{yyyy-MM-dd}.log</fileNamePattern>
+                <maxHistory>7</maxHistory>
+            </rollingPolicy>
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+        </appender>
+
+        <root level="DEBUG">
+            <appender-ref ref="DEV_CONSOLE"/>
+            <appender-ref ref="DEV_FILE"/>
+        </root>
+
+        <!--        &lt;!&ndash; Restrict root logs &ndash;&gt;-->
+        <!--        <root level="ERROR">-->
+        <!--            <appender-ref ref="STDOUT"/>-->
+        <!--        </root>-->
+
+        <!--        &lt;!&ndash; Enable only your package &ndash;&gt;-->
+        <!--        <logger name="com.example.myapp" level="DEBUG" additivity="false">-->
+        <!--            <appender-ref ref="STDOUT"/>-->
+        <!--        </logger>-->
+    </springProfile>
+</configuration>
