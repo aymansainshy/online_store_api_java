@@ -9,35 +9,47 @@
     <springProfile name="dev">
 
         <!-- Console appender (pretty JSON) -->
-        <appender name="DEV_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight([%-5level]) %cyan([%thread]) %yellow(%logger{25}) %green([${appName:-UNKNOWN}]) %green(%X) - %highlight(%msg){FATAL=bright red, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=blue} %n%n</pattern>
-            </encoder>
-        </appender>
-
-
-<!--        &lt;!&ndash; Console appender (pretty JSON) &ndash;&gt;-->
 <!--        <appender name="DEV_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">-->
-<!--            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">-->
-<!--                <providers>-->
-<!--                    <pattern>-->
-<!--                        <pattern>-->
-<!--                            <![CDATA[-->
-<!--                                {-->
-<!--                                   "app_name": "${appName:-UNKNOWN}",-->
-<!--                                   "level": "%level",-->
-<!--                                   "app_message": "%msg",-->
-<!--                                   "log_info": "%X{log_info:-}",-->
-<!--                                   "exception": "%exception{0}",-->
-<!--                                   "timestamp": "%date{ISO8601}"-->
-<!--                                }-->
-<!--                            ]]>-->
-<!--                        </pattern>-->
-<!--                    </pattern>-->
-<!--                    <prettyPrint>true</prettyPrint> &lt;!&ndash; ✅ pretty in console &ndash;&gt;-->
-<!--                </providers>-->
+<!--            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">-->
+<!--                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight([%-5level]) %cyan([%thread]) %yellow(%logger{25}) %green([${appName:-UNKNOWN}]) %green(%X) - %highlight(%msg){FATAL=bright red, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=blue} %n%n</pattern>-->
 <!--            </encoder>-->
 <!--        </appender>-->
+
+
+        <appender name="DEV_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+                <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+                    <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+                        <prettyPrint>true</prettyPrint>
+                    </jsonFormatter>
+
+
+                    <!-- MDC fields to flatten -->
+                    <includeMDC>true</includeMDC>
+<!--                    <includeMdcKeyName>app_message</includeMdcKeyName>-->
+<!--                    <includeMdcKeyName>info</includeMdcKeyName>-->
+
+                    <!-- top-level static field -->
+<!--                    <customField name="app_name" value="${appName}"/>-->
+<!--                    <customFields>{"app_name":"${appName:-UNKNOWN}"}</customFields>-->
+
+
+                    <!-- other standard fields -->
+<!--                    <includeLevel>true</includeLevel>-->
+<!--                    <includeLoggerName>true</includeLoggerName>-->
+<!--                    <includeThreadName>true</includeThreadName>-->
+                    <includeFormattedMessage>true</includeFormattedMessage>
+                    <includeException>true</includeException>
+                    <timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSS</timestampFormat>
+                    <appendLineSeparator>true</appendLineSeparator>
+
+                </layout>
+            </encoder>
+
+            <!-- Apply color filter only in console -->
+            <withJansi>true</withJansi>
+        </appender>
+
 
 
         <!-- File appender (compact JSON) -->
@@ -47,7 +59,34 @@
                 <fileNamePattern>${logPath}/dev-app.%d{yyyy-MM-dd}.log</fileNamePattern>
                 <maxHistory>7</maxHistory>
             </rollingPolicy>
-            <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+            <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+                <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+                    <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+                        <prettyPrint>false</prettyPrint>
+                    </jsonFormatter>
+
+                    <!-- MDC fields to flatten -->
+                    <includeMDC>true</includeMDC>
+                    <!--                    <includeMdcKeyName>app_message</includeMdcKeyName>-->
+                    <!--                    <includeMdcKeyName>info</includeMdcKeyName>-->
+
+
+                    <!-- top-level static field -->
+                    <!--                    <customField name="app_name" value="${appName}"/>-->
+                    <!--                    <customFields>{"app_name":"${appName:-UNKNOWN}"}</customFields>-->
+
+
+                    <!-- other standard fields -->
+<!--                    <includeLevel>true</includeLevel>-->
+<!--                    <includeLoggerName>true</includeLoggerName>-->
+<!--                    <includeThreadName>true</includeThreadName>-->
+                    <includeFormattedMessage>true</includeFormattedMessage>
+                    <includeException>true</includeException>
+                    <timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSS</timestampFormat>
+                    <appendLineSeparator>true</appendLineSeparator>
+
+                </layout>
+            </encoder>
         </appender>
 
         <root level="DEBUG">

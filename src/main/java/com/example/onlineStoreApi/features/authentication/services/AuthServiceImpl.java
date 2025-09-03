@@ -38,7 +38,7 @@ import java.util.Optional;
 //@AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
+    StructuredLogger logger = StructuredLogger.getLogger(AuthServiceImpl.class);
 
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
@@ -67,9 +67,9 @@ public class AuthServiceImpl implements AuthService {
                 )
         );
 
-        logger.debug("USER_LOGIN_SUCCESS email: {} data: {}", loginDto.email(), new Date());
+//        logger.debug("USER_LOGIN_SUCCESS email: {} data: {}", loginDto.email(), new Date());
 
-//        StructuredLogger.debug("USER_LOGIN_SUCCESS", "email: " + loginDto.email());
+        logger.debug("USER_LOGIN_SUCCESS", Map.of("email", loginDto.email(), "date", new Date()));
 
         Optional<User> existingUser = userRepository.findByEmail(loginDto.email());
 

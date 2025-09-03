@@ -1,6 +1,8 @@
 package com.example.onlineStoreApi.core.security.userDetailsServices;
 
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.ResourceNotFoundException;
+import com.example.onlineStoreApi.core.utils.StructuredLogger;
+import com.example.onlineStoreApi.features.authentication.services.AuthServiceImpl;
 import com.example.onlineStoreApi.features.users.models.User;
 import com.example.onlineStoreApi.features.users.repositories.UserRepository;
 import com.example.onlineStoreApi.services.cache.CacheService;
@@ -11,9 +13,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
+    StructuredLogger logger = StructuredLogger.getLogger(CustomUserDetailsService.class);
 
     private final UserRepository userRepository;
     private final CacheService cacheService;
@@ -36,7 +41,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         User cachedUser = (User) cacheService.get(username);
 
         if (cachedUser != null) {
-            System.out.println("___-_____--_------_ CACHED USER----_-_---_--_-_-_---_-_-__-__ " + true);
+            logger.debug("CACHED_USER_FOUND", Map.of("email", cachedUser.getEmail()));
             return AppUserDetails
                     .builder()
                     .id(cachedUser.getId())
@@ -51,7 +56,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                     .findByEmail(username)
                     .orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
 
-            System.out.println("___-_____--_------_Preform CACHe USER----_-_---_--_-_-_---_-_-__-__ ");
+            logger.debug("PERFORM_CACHED_USER", Map.of("email", user.getEmail()));
             cacheService.put(user.getEmail(), user);
 
 

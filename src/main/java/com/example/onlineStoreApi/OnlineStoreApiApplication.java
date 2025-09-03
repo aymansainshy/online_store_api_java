@@ -1,17 +1,22 @@
 package com.example.onlineStoreApi;
 
+import com.example.onlineStoreApi.core.utils.StructuredLogger;
+import com.example.onlineStoreApi.features.authentication.services.AuthServiceImpl;
 import com.example.onlineStoreApi.services.cache.InMemoryCache;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.ApplicationContext;
 
+import java.util.Map;
+
 @SpringBootApplication
 @ServletComponentScan
 public class OnlineStoreApiApplication {
+    static StructuredLogger logger = StructuredLogger.getLogger(OnlineStoreApiApplication.class);
 
     public static void main(String[] args) {
-        System.out.println("Hello, Ayman Abdulrahman and Welcome to Spring Boot (<O^O>)");
+        logger.debug("APPLICATION_MESSAGE", Map.of("message", "Hello, Ayman Abdulrahman and Welcome to Spring Boot (<O^O>)"));
 
         ApplicationContext context = SpringApplication.run(OnlineStoreApiApplication.class, args);
 
@@ -19,7 +24,7 @@ public class OnlineStoreApiApplication {
         // meaning only one instance is created and shared across the application.
         InMemoryCache inMemoryCache1 = context.getBean(InMemoryCache.class);
         InMemoryCache inMemoryCache2 = context.getBean(InMemoryCache.class);
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  " + (inMemoryCache1 == inMemoryCache2));
+        logger.debug("APPLICATION_MESSAGE", Map.of("Equal", (inMemoryCache1 == inMemoryCache2)));
     }
 }
 
