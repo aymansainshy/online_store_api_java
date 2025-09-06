@@ -5,6 +5,7 @@ import com.example.onlineStoreApi.core.exceptions.customeExceptions.CustomExcept
 import com.example.onlineStoreApi.core.exceptions.customeExceptions.InternalServerException;
 import com.example.onlineStoreApi.core.security.userDetailsServices.AppUserDetails;
 import com.example.onlineStoreApi.core.security.userDetailsServices.CustomUserDetailsService;
+import com.example.onlineStoreApi.core.utils.StructuredLogger;
 import com.example.onlineStoreApi.services.JwtService.JwtService;
 import com.example.onlineStoreApi.services.JwtService.TokenType;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,6 +29,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -137,7 +139,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
              * Instead, you need to handle these exceptions within the filter
              * itself or use a custom Filter for centralized exception handling.
              */
-            System.out.println("___-_--____JWT Authentication filter____-___ ______-__-__- ==>> " + (ex));
+
+            StructuredLogger.error("JWT_AUTHENTICATION_FILTER_ERROR", Map.of("error", ex.getMessage(), "stack", ex.getStackTrace()));
 
             if (ex instanceof CustomException) {
                 response.setStatus(((CustomException) ex).getStatus());

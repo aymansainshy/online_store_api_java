@@ -26,20 +26,14 @@ public class AuthController {
 
     @PostMapping("/login")
 //    @Cacheable(cacheNames="user", key="#email")
-    public ResponseEntity<ApiResponse<AuthResponse>> login(
-            @Valid
-            @RequestBody
-            LoginDto loginDto) {
+    public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginDto loginDto) {
         AuthResponse authResponse = authService.login(loginDto);
         ApiResponse<AuthResponse> apiResponse = new ApiResponse<>(authResponse);
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<AuthResponse>> register(
-            @Valid
-            @RequestBody
-            RegisterDto registerDto) {
+    public ResponseEntity<ApiResponse<AuthResponse>> register(@Valid @RequestBody RegisterDto registerDto) {
         AuthResponse authResponse = authService.register(registerDto);
         ApiResponse<AuthResponse> apiResponse = new ApiResponse<>(authResponse);
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
@@ -47,10 +41,7 @@ public class AuthController {
 
 
     @PostMapping("/refresh")
-    public ResponseEntity<ApiResponse<RefreshTokenResponse>> refreshToken(
-            @Valid
-            @RequestBody
-            RefreshDto refreshDto) {
+    public ResponseEntity<ApiResponse<RefreshTokenResponse>> refreshToken(@Valid @RequestBody RefreshDto refreshDto) {
         RefreshTokenResponse refreshTokenResponse = authService.refreshToken(refreshDto);
         ApiResponse<RefreshTokenResponse> apiResponse = new ApiResponse<>(refreshTokenResponse);
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
@@ -58,10 +49,7 @@ public class AuthController {
 
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<String>> logout(
-            @RequestHeader("Authorization") @NotNull String token,
-            HttpServletRequest request,
-            HttpServletResponse response) {
+    public ResponseEntity<ApiResponse<String>> logout(@RequestHeader("Authorization") @NotNull String token, HttpServletRequest request, HttpServletResponse response) {
         String extractedToken = token.substring(7);
         authService.logout(extractedToken, request, response);
         ApiResponse<String> apiResponse = new ApiResponse<>("Successful");

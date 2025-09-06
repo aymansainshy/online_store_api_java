@@ -13,10 +13,9 @@ import java.util.Map;
 @SpringBootApplication
 @ServletComponentScan
 public class OnlineStoreApiApplication {
-    static StructuredLogger logger = StructuredLogger.getLogger(OnlineStoreApiApplication.class);
 
     public static void main(String[] args) {
-        logger.debug("APPLICATION_MESSAGE", Map.of("message", "Hello, Ayman Abdulrahman and Welcome to Spring Boot (<O^O>)"));
+        StructuredLogger.debug("APPLICATION_MESSAGE", Map.of("message", "Hello, Ayman Abdulrahman and Welcome to Spring Boot (<O^O>)"));
 
         ApplicationContext context = SpringApplication.run(OnlineStoreApiApplication.class, args);
 
@@ -24,7 +23,7 @@ public class OnlineStoreApiApplication {
         // meaning only one instance is created and shared across the application.
         InMemoryCache inMemoryCache1 = context.getBean(InMemoryCache.class);
         InMemoryCache inMemoryCache2 = context.getBean(InMemoryCache.class);
-        logger.debug("APPLICATION_MESSAGE", Map.of("Equal", (inMemoryCache1 == inMemoryCache2)));
+        StructuredLogger.debug("APPLICATION_MESSAGE", Map.of("Equal", (inMemoryCache1 == inMemoryCache2)));
     }
 }
 

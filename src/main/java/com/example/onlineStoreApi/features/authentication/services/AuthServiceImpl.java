@@ -38,7 +38,6 @@ import java.util.Optional;
 //@AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    StructuredLogger logger = StructuredLogger.getLogger(AuthServiceImpl.class);
 
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
@@ -60,32 +59,38 @@ public class AuthServiceImpl implements AuthService {
 
 
     public AuthResponse login(LoginDto loginDto) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginDto.email(),
-                        loginDto.password()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginDto.email(),
+                            loginDto.password()
+                    )
+            );
 
-//        logger.debug("USER_LOGIN_SUCCESS email: {} data: {}", loginDto.email(), new Date());
+            StructuredLogger.info("USER_LOGIN_SUCCESS", Map.of("email", loginDto.email(), "date", new Date()));
 
-        logger.debug("USER_LOGIN_SUCCESS", Map.of("email", loginDto.email(), "date", new Date()));
+            Optional<User> existingUser = userRepository.findByEmail(loginDto.email());
 
-        Optional<User> existingUser = userRepository.findByEmail(loginDto.email());
 
-        if (existingUser.isEmpty()) {
-            throw new ResourceNotFoundException("User not found");
+            if (existingUser.isEmpty()) {
+
+                throw new ResourceNotFoundException("User not found");
+            }
+
+            String accessToken = jwtService.generateAccessToken(existingUser.get());
+            String refreshToken = jwtService.generateRefreshToken(existingUser.get());
+
+            return AuthResponse
+                    .builder()
+                    .user(existingUser.get())
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .build();
+
+        } catch (Exception e) {
+            StructuredLogger.error("USER_LOGIN_ERROR", Map.of("error_message", e.getMessage()));
+            throw e;
         }
-
-        String accessToken = jwtService.generateAccessToken(existingUser.get());
-        String refreshToken = jwtService.generateRefreshToken(existingUser.get());
-
-        return AuthResponse
-                .builder()
-                .user(existingUser.get())
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
     }
 
 
@@ -147,12 +152,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void logout(String token, HttpServletRequest request, HttpServletResponse response) {
-        AppUserDetails currentUser =  (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println("Current User __--____--___---_-___---)))))" + currentUser);
+        AppUserDetails currentUser = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        StructuredLogger.debug("USER_LOGOUT_TRIGGERED", Map.of("user", currentUser));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Current authentication __--____--___---_-___---))))))" + authentication);
         SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
         securityContextLogoutHandler.logout(request, response, authentication);
+        StructuredLogger.debug("USER_LOGOUT_SUCCESS", Map.of("user", authentication));
         jwtService.blacklistToken(token);
     }
 

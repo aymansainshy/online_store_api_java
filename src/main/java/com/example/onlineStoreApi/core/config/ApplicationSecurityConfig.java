@@ -1,10 +1,9 @@
-package com.example.onlineStoreApi.core.security;
+package com.example.onlineStoreApi.core.config;
 
 
 import com.example.onlineStoreApi.core.exceptions.SecurityFilterChainExceptions.CustomAccessDeniedHandler;
 import com.example.onlineStoreApi.core.exceptions.SecurityFilterChainExceptions.CustomAuthenticationEntryPoint;
 import com.example.onlineStoreApi.core.filters.authentication.JwtAuthenticationFilter;
-import com.example.onlineStoreApi.core.filters.logging.LoggingFilter;
 import com.example.onlineStoreApi.core.security.userDetailsServices.CustomUserDetailsService;
 import com.example.onlineStoreApi.features.users.utils.UserRoles;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;

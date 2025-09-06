@@ -2,104 +2,145 @@
 <configuration scan="true">
 
     <!-- read app.name and log path -->
-    <springProperty name="appName" source="app.name"/>
+    <springProperty name="appName" source="spring.application.name"/>
     <springProperty name="logPath" source="logging.file.path"/>
 
     <!-- DEVELOPMENT PROFILE -->
     <springProfile name="dev">
 
-        <!-- Console appender (pretty JSON) -->
-<!--        <appender name="DEV_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">-->
-<!--            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">-->
-<!--                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight([%-5level]) %cyan([%thread]) %yellow(%logger{25}) %green([${appName:-UNKNOWN}]) %green(%X) - %highlight(%msg){FATAL=bright red, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=blue} %n%n</pattern>-->
-<!--            </encoder>-->
-<!--        </appender>-->
-
-
+        <!--  Console appender (pretty JSON)-->
         <appender name="DEV_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-                <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
-                    <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
-                        <prettyPrint>true</prettyPrint>
-                    </jsonFormatter>
-
-
-                    <!-- MDC fields to flatten -->
-                    <includeMDC>true</includeMDC>
-<!--                    <includeMdcKeyName>app_message</includeMdcKeyName>-->
-<!--                    <includeMdcKeyName>info</includeMdcKeyName>-->
-
-                    <!-- top-level static field -->
-<!--                    <customField name="app_name" value="${appName}"/>-->
-<!--                    <customFields>{"app_name":"${appName:-UNKNOWN}"}</customFields>-->
-
-
-                    <!-- other standard fields -->
-<!--                    <includeLevel>true</includeLevel>-->
-<!--                    <includeLoggerName>true</includeLoggerName>-->
-<!--                    <includeThreadName>true</includeThreadName>-->
-                    <includeFormattedMessage>true</includeFormattedMessage>
-                    <includeException>true</includeException>
-                    <timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSS</timestampFormat>
-                    <appendLineSeparator>true</appendLineSeparator>
-
-                </layout>
-            </encoder>
-
-            <!-- Apply color filter only in console -->
             <withJansi>true</withJansi>
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>
+{
+  %cyan(TIMESTAMP): %d{yyyy-MM-dd HH:mm:ss.SSS} <!-- ISO8601 format -->
+  %cyan(LEVEL): %highlight([%-5level]) <!-- Color based on log level -->
+  %cyan(THREAD): %cyan([%thread]) <!-- Thread name in cyan -->
+  %cyan(LOGGER): %yellow(%logger{25}) <!-- Logger name in yellow, max 25 chars -->
+  %cyan(APP_NAME): %green([${appName:-UNKNOWN}]) <!-- App name from property in green -->
+  %cyan(APP_MESSAGE): %highlight(%msg){FATAL=bright red, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=blue}
+  %cyan(LOG_INFO): %highlight(%X{log_info}){FATAL=bright red, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=blue}
+}%n%n
+                </pattern>
+            </encoder>
         </appender>
 
+
+
+        <!--        <appender name="DEV_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">-->
+        <!--            <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">-->
+        <!--                <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">-->
+        <!--                    <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">-->
+        <!--                        <prettyPrint>true</prettyPrint>-->
+        <!--                    </jsonFormatter>-->
+
+
+        <!--                    &lt;!&ndash; MDC fields to flatten &ndash;&gt;-->
+        <!--                    <includeMDC>true</includeMDC>-->
+        <!--                    <includeMdcKeyName>app_message</includeMdcKeyName>-->
+        <!--                    <includeMdcKeyName>log_info</includeMdcKeyName>-->
+
+        <!--                    &lt;!&ndash; top-level static field &ndash;&gt;-->
+        <!--                    &lt;!&ndash;                    <customField name="app_name" value="${appName}"/>&ndash;&gt;-->
+        <!--                    &lt;!&ndash;                    <customFields>{"app_name":"${appName:-UNKNOWN}"}</customFields>&ndash;&gt;-->
+
+
+        <!--                    &lt;!&ndash; other standard fields &ndash;&gt;-->
+        <!--                    &lt;!&ndash;                    <includeLevel>true</includeLevel>&ndash;&gt;-->
+        <!--                    &lt;!&ndash;                    <includeLoggerName>true</includeLoggerName>&ndash;&gt;-->
+        <!--                    &lt;!&ndash;                    <includeThreadName>true</includeThreadName>&ndash;&gt;-->
+        <!--                    <includeFormattedMessage>true</includeFormattedMessage>-->
+        <!--                    <includeException>true</includeException>-->
+        <!--                    <timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSS</timestampFormat>-->
+        <!--                    <appendLineSeparator>true</appendLineSeparator>-->
+
+        <!--                </layout>-->
+        <!--            </encoder>-->
+
+        <!--            &lt;!&ndash; Apply color filter only in console &ndash;&gt;-->
+        <!--            <withJansi>true</withJansi>-->
+        <!--        </appender>-->
 
 
         <!-- File appender (compact JSON) -->
         <appender name="DEV_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <file>${logPath}/dev-app.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                <fileNamePattern>${logPath}/dev-app.%d{yyyy-MM-dd}.log</fileNamePattern>
+                <fileNamePattern>${logPath}/prod-app.%d{yyyy-MM-dd}.log</fileNamePattern>
                 <maxHistory>7</maxHistory>
             </rollingPolicy>
-            <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-                <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
-                    <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
-                        <prettyPrint>false</prettyPrint>
-                    </jsonFormatter>
-
-                    <!-- MDC fields to flatten -->
-                    <includeMDC>true</includeMDC>
-                    <!--                    <includeMdcKeyName>app_message</includeMdcKeyName>-->
-                    <!--                    <includeMdcKeyName>info</includeMdcKeyName>-->
-
-
-                    <!-- top-level static field -->
-                    <!--                    <customField name="app_name" value="${appName}"/>-->
-                    <!--                    <customFields>{"app_name":"${appName:-UNKNOWN}"}</customFields>-->
-
-
-                    <!-- other standard fields -->
-<!--                    <includeLevel>true</includeLevel>-->
-<!--                    <includeLoggerName>true</includeLoggerName>-->
-<!--                    <includeThreadName>true</includeThreadName>-->
-                    <includeFormattedMessage>true</includeFormattedMessage>
-                    <includeException>true</includeException>
-                    <timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSS</timestampFormat>
-                    <appendLineSeparator>true</appendLineSeparator>
-
-                </layout>
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+                    <pattern>
+                        <pattern>
+                            {
+                            "timestamp": "%date{ISO8601}",
+                            "app_name": "${appName:-UNKNOWN}",
+                            "level": "%level",
+                            "thread": "%thread",
+                            "logger": "%logger{25}",
+                            "app_message": "%msg",
+                            "log_info": "%X{log_info:-}"
+                            }
+                        </pattern>
+                    </pattern>
+                </providers>
             </encoder>
         </appender>
+
+
+
+<!--        <appender name="DEV_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--            <file>${logPath}/dev-app.log</file>-->
+<!--            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+<!--                <fileNamePattern>${logPath}/dev-app.%d{yyyy-MM-dd}.log</fileNamePattern>-->
+<!--                <maxHistory>7</maxHistory>-->
+<!--            </rollingPolicy>-->
+<!--            <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">-->
+<!--                <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">-->
+<!--                    <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">-->
+<!--                        <prettyPrint>false</prettyPrint>-->
+<!--                    </jsonFormatter>-->
+
+<!--                    &lt;!&ndash; MDC fields to flatten &ndash;&gt;-->
+<!--                    <includeMDC>true</includeMDC>-->
+<!--                    &lt;!&ndash;                    <includeMdcKeyName>app_message</includeMdcKeyName>&ndash;&gt;-->
+<!--                    &lt;!&ndash;                    <includeMdcKeyName>log_info</includeMdcKeyName>&ndash;&gt;-->
+
+
+<!--                    &lt;!&ndash; top-level static field &ndash;&gt;-->
+<!--                    &lt;!&ndash;                    <customField name="app_name" value="${appName}"/>&ndash;&gt;-->
+<!--                    &lt;!&ndash;                    <customFields>{"app_name":"${appName:-UNKNOWN}"}</customFields>&ndash;&gt;-->
+
+
+<!--                    &lt;!&ndash; other standard fields &ndash;&gt;-->
+<!--                    &lt;!&ndash;                    <includeLevel>true</includeLevel>&ndash;&gt;-->
+<!--                    &lt;!&ndash;                    <includeLoggerName>true</includeLoggerName>&ndash;&gt;-->
+<!--                    &lt;!&ndash;                    <includeThreadName>true</includeThreadName>&ndash;&gt;-->
+<!--                    <includeFormattedMessage>true</includeFormattedMessage>-->
+<!--                    <includeException>true</includeException>-->
+<!--                    <timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSS</timestampFormat>-->
+<!--                    <appendLineSeparator>true</appendLineSeparator>-->
+
+<!--                </layout>-->
+<!--            </encoder>-->
+<!--        </appender>-->
+
+
+
 
         <root level="DEBUG">
             <appender-ref ref="DEV_CONSOLE"/>
             <appender-ref ref="DEV_FILE"/>
         </root>
 
-        <!--        &lt;!&ndash; Restrict root logs &ndash;&gt;-->
+        <!--        Restrict root logs -->
         <!--        <root level="ERROR">-->
         <!--            <appender-ref ref="STDOUT"/>-->
         <!--        </root>-->
 
-        <!--        &lt;!&ndash; Enable only your package &ndash;&gt;-->
+        <!--        &lt;!&ndash; Enable only your package -->
         <!--        <logger name="com.example.myapp" level="DEBUG" additivity="false">-->
         <!--            <appender-ref ref="STDOUT"/>-->
         <!--        </logger>-->

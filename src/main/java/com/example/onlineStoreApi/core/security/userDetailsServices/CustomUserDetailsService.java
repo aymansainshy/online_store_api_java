@@ -18,7 +18,6 @@ import java.util.Map;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    StructuredLogger logger = StructuredLogger.getLogger(CustomUserDetailsService.class);
 
     private final UserRepository userRepository;
     private final CacheService cacheService;
@@ -41,7 +40,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         User cachedUser = (User) cacheService.get(username);
 
         if (cachedUser != null) {
-            logger.debug("CACHED_USER_FOUND", Map.of("email", cachedUser.getEmail()));
+            StructuredLogger.debug("CACHED_USER_FOUND", Map.of("email", cachedUser.getEmail()));
             return AppUserDetails
                     .builder()
                     .id(cachedUser.getId())
@@ -56,7 +55,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                     .findByEmail(username)
                     .orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
 
-            logger.debug("PERFORM_CACHED_USER", Map.of("email", user.getEmail()));
+            StructuredLogger.debug("PERFORM_CACHED_USER", Map.of("email", user.getEmail()));
             cacheService.put(user.getEmail(), user);
 
 

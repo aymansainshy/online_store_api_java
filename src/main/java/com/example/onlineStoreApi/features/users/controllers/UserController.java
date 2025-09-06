@@ -34,7 +34,6 @@ public class UserController {
     }
 
 
-    static StructuredLogger logger = StructuredLogger.getLogger(UserController.class);
 
 //    Logger loggerr = LoggerFactory.getLogger(UserController.class);
 
@@ -42,7 +41,7 @@ public class UserController {
     @GetMapping()
 //    @PreAuthorize(Is.ADMIN)
     public ResponseEntity<ApiResponse<List<User>>> getAllUsers() {
-        logger.debug("GET_ALL_USERS", Map.of( "service", "UserService"));
+        StructuredLogger.debug("GET_ALL_USERS", Map.of( "service", "UserService"));
         List<User> userList = userService.getAllUsers();
         ApiResponse<List<User>> apiResponse = new ApiResponse<>(userList);
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);

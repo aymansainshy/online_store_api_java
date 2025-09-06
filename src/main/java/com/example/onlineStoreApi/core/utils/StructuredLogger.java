@@ -7,43 +7,51 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 public class StructuredLogger {
 
-    private  final ObjectMapper mapper = new ObjectMapper();
-    private  static  Logger log;
+    private static final ObjectMapper mapper = new ObjectMapper();
 
-
-    public static  StructuredLogger getLogger(Class<?> clazz) {
-           log = LoggerFactory.getLogger(clazz);
-          return new StructuredLogger();
+    public static void debug(String appMessage, Map<String, Object> info) {
+        logWithLevel(appMessage, info, Logger::debug);
     }
 
-    /**
-     * Log an application-level structured message.
-     * - app_message becomes the log message (so it maps to app_message in the pattern).
-     * - log_info becomes an escaped JSON string in MDC (so it remains valid JSON in the output).
-     * - message field remains empty (we log the app_message in app_message).
-     */
-    public void debug(String appMessage, Object info) {
+    public static void info(String appMessage, Map<String, Object> info) {
+        logWithLevel(appMessage, info, Logger::info);
+    }
+
+    public static void error(String appMessage, Map<String, Object> info) {
+        logWithLevel(appMessage, info, Logger::error);
+    }
+
+
+    private static void logWithLevel(String appMessage, Map<String, Object> info, BiConsumer<Logger, String> logMethod) {
+        String callerClassName = getCallerClassName();
+        Logger logger = LoggerFactory.getLogger(callerClassName);
+
         try {
-            // serialize info to JSON and escape quotes so the pattern's JSON remains valid
             String json = mapper.writeValueAsString(info);
-//            String escaped = json.replace("\"", "\\\""); // results in {"a":"b"} -> {\"a\":\"b\"}
             MDC.put("log_info", json);
-//            MDC.put("app_message", appMessage);
-
-            // log the app-level message — the pattern maps %msg -> app_message
-            log.debug(appMessage);
-            MDC.remove("log_info");
-//            MDC.remove("app_message");
-
+            logMethod.accept(logger, appMessage);
         } catch (JsonProcessingException e) {
-            MDC.remove("log_info");
             throw new RuntimeException(e);
         } finally {
-            MDC.remove("log_info");
-//            MDC.remove("app_message");
+            MDC.clear();
         }
     }
+
+
+    private static String getCallerClassName() {
+        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+        for (StackTraceElement element : stack) {
+            String className = element.getClassName();
+            if (!className.equals(StructuredLogger.class.getName())
+                    && !className.equals(Thread.class.getName())) {
+                return className;
+            }
+        }
+        return StructuredLogger.class.getName();
+    }
+
 }

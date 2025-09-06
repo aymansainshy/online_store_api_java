@@ -1,16 +1,11 @@
-package com.example.onlineStoreApi.core.filters;
+package com.example.onlineStoreApi.core.config;
 
-import com.example.onlineStoreApi.core.filters.logging.LoggingFilter;
-import lombok.AllArgsConstructor;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 @Configuration
-public class FilterConfig {
+public class RequestLoggingFilterConfig {
 
     @Bean  // BuildIn logging filter
     public CommonsRequestLoggingFilter logFilter() {
@@ -19,7 +14,7 @@ public class FilterConfig {
         filter.setIncludePayload(true);
         filter.setMaxPayloadLength(10000);
         filter.setIncludeHeaders(true);
-        filter.setAfterMessagePrefix("REQUEST DATA: ");
+        filter.setAfterMessagePrefix("INCOMING_REQUEST_DATA : ");
         return filter;
     }
 

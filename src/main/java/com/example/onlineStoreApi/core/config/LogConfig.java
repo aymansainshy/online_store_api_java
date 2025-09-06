@@ -11,7 +11,7 @@ public class LogConfig {
 
     private final String appName;
 
-    public LogConfig(@Value("${app.name}") String appName) {
+    public LogConfig(@Value("${spring.application.name}") String appName) {
         this.appName = appName;
     }
 
